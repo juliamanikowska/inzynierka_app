@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.example.ShipController"
+            prefHeight="400.0" prefWidth="600.0">
+
+
+    <Label fx:id="labelControl"  AnchorPane.leftAnchor="10" AnchorPane.topAnchor="10" />
+
+
+    <Label text="©2025 Julia Manikowska, Jakub Kubiak, Mateusz Wieczorek, Jan Odważny - All rights reserved" AnchorPane.leftAnchor="20" AnchorPane.bottomAnchor="20"/>
+
+</AnchorPane>
