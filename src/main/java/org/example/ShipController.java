@@ -1,12 +1,16 @@
 package org.example;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.util.Duration;
 
 public class ShipController {
 
@@ -20,6 +24,7 @@ public class ShipController {
     private int pos_x;
     private int pos_turn;
     private int immersion_time;
+    private boolean isImmersed = false;
 
     @FXML
     public void initialize() {
@@ -30,11 +35,11 @@ public class ShipController {
     }
 
     private void createButtons() {
-        HBox  button1 = createButtonWithTextField("Move forward");
-        HBox  button2 = createButtonWithTextField("Turn left");
-        HBox  button3 = createButtonWithTextField("Immersion");
-        HBox  button4 = createButtonWithTextField("Move back");
-        HBox  button5 = createButtonWithTextField("Turn right");
+        HBox button1 = createButtonWithTextField("Move forward");
+        HBox button2 = createButtonWithTextField("Turn left");
+        HBox button3 = createButtonWithTextField("Immersion");
+        HBox button4 = createButtonWithTextField("Move back");
+        HBox button5 = createButtonWithTextField("Turn right");
         Button button6 = new Button("Help");
 
         button6.setPrefSize(150, 50);
@@ -57,11 +62,50 @@ public class ShipController {
         TextField textField = new TextField();
         textField.setPrefSize(50, 50);
 
-        button.setOnAction(event -> textField.clear());
+        button.setOnAction(event -> {
+            if (buttonText.equals("Immersion")) {
+                try {
+                    immersion_time = Integer.parseInt(textField.getText());
+                    state.setText("Immersion");
+                    disableControls(true);
+                    startImmersionTimer();
+                    textField.clear();
+                } catch (NumberFormatException e) {
+                    showErrorAlert("Invalid input", "Please enter a valid number of seconds.");
+                }
+            } else {
+                textField.clear();
+            }
+        });
 
         hbox.getChildren().addAll(button, textField);
 
         return hbox;
     }
 
+    private void disableControls(boolean disable) {
+        for (var node : buttonGrid.getChildren()) {
+            node.setDisable(disable);
+        }
+    }
+
+    private void startImmersionTimer() {
+        Timeline timer = new Timeline(
+                new KeyFrame(Duration.seconds(immersion_time), event -> {
+                    state.setText("Emergence");
+
+                    disableControls(false);
+                })
+        );
+        timer.setCycleCount(1);
+        timer.play();
+    }
+
+    private void showErrorAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
 }
