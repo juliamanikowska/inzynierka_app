@@ -18,7 +18,6 @@ public class ShipApplicationController {
     @FXML
     private String appName = "Remote Ship Controller App";
 
-
     private Stage stage;
     private Scene startScene;
 
@@ -55,10 +54,5 @@ public class ShipApplicationController {
         Scene controlScene = new Scene(controlSceneRoot);
         stage.setScene(controlScene);
     }
-
-
-
-
-
 
 }
