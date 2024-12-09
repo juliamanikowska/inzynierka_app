@@ -20,17 +20,19 @@ public class ShipController {
     private Label state;
     @FXML
     private GridPane buttonGrid;
+    @FXML
+    private Label posXLabel;
 
-    private int pos_x;
+    private int pos_x = 0;
     private int pos_turn;
     private int immersion_time;
-    private boolean isImmersed = false;
 
     @FXML
     public void initialize() {
         shipName.setText("Ship Name");
         state.setText("Emergence");
         state.setStyle("-fx-font-size: 25px; -fx-text-fill: blue; -fx-font-weight: bold;");
+        posXLabel.setText("Position: " + pos_x);
         createButtons();
     }
 
@@ -73,6 +75,24 @@ public class ShipController {
                 } catch (NumberFormatException e) {
                     showErrorAlert("Invalid input", "Please enter a valid number of seconds.");
                 }
+            } else if (buttonText.equals("Move forward")) {
+                try {
+                    int moveAmount = Integer.parseInt(textField.getText());
+                    pos_x += moveAmount;
+                    posXLabel.setText("Position: " + pos_x);
+                    textField.clear();
+                } catch (NumberFormatException e) {
+                    showErrorAlert("Invalid input", "Please enter a valid number.");
+                }
+            } else if (buttonText.equals("Move back")) {
+                try {
+                    int moveAmount = Integer.parseInt(textField.getText());
+                    pos_x -= moveAmount;
+                    posXLabel.setText("Position: " + pos_x);
+                    textField.clear();
+                } catch (NumberFormatException e) {
+                    showErrorAlert("Invalid input", "Please enter a valid number.");
+                }
             } else {
                 textField.clear();
             }
@@ -93,7 +113,6 @@ public class ShipController {
         Timeline timer = new Timeline(
                 new KeyFrame(Duration.seconds(immersion_time), event -> {
                     state.setText("Emergence");
-
                     disableControls(false);
                 })
         );
@@ -108,4 +127,5 @@ public class ShipController {
         alert.setContentText(message);
         alert.showAndWait();
     }
+
 }
