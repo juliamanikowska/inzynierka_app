@@ -22,9 +22,11 @@ public class ShipController {
     private GridPane buttonGrid;
     @FXML
     private Label posXLabel;
+    @FXML
+    private Label posTurnLabel;
 
     private int pos_x = 0;
-    private int pos_turn;
+    private int pos_turn = 0;
     private int immersion_time;
 
     @FXML
@@ -33,6 +35,7 @@ public class ShipController {
         state.setText("Emergence");
         state.setStyle("-fx-font-size: 25px; -fx-text-fill: blue; -fx-font-weight: bold;");
         posXLabel.setText("Position: " + pos_x);
+        posTurnLabel.setText("Turned: " + pos_turn);
         createButtons();
     }
 
@@ -89,6 +92,24 @@ public class ShipController {
                     int moveAmount = Integer.parseInt(textField.getText());
                     pos_x -= moveAmount;
                     posXLabel.setText("Position: " + pos_x);
+                    textField.clear();
+                } catch (NumberFormatException e) {
+                    showErrorAlert("Invalid input", "Please enter a valid number.");
+                }
+            } else if (buttonText.equals("Turn left")) {
+                try {
+                    int turnAmount = Integer.parseInt(textField.getText());
+                    pos_turn -= turnAmount;
+                    posTurnLabel.setText("Turned: " + pos_turn);
+                    textField.clear();
+                } catch (NumberFormatException e) {
+                    showErrorAlert("Invalid input", "Please enter a valid number.");
+                }
+            } else if (buttonText.equals("Turn right")) {
+                try {
+                    int turnAmount = Integer.parseInt(textField.getText());
+                    pos_turn += turnAmount;
+                    posTurnLabel.setText("Turned: " + pos_turn);
                     textField.clear();
                 } catch (NumberFormatException e) {
                     showErrorAlert("Invalid input", "Please enter a valid number.");
