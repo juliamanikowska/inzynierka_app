@@ -1,16 +1,20 @@
 package org.example;
 
+import javafx.scene.control.*;
+import org.example.controller.CommService;
+import org.example.controller.SubmarineController;
+import org.example.model.Command;
+import com.fazecast.jSerialComm.SerialPort;
+
+import javafx.collections.FXCollections;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.util.Duration;
+import javafx.scene.layout.GridPane;
 
 public class ShipController {
 
@@ -24,10 +28,20 @@ public class ShipController {
     private Label posXLabel;
     @FXML
     private Label posTurnLabel;
+    @FXML
+    private ComboBox<String> portComboBox;
 
     private int pos_x = 0;
     private int pos_turn = 0;
     private int immersion_time;
+
+    private SubmarineController submarineController;
+    private CommService commService;
+
+
+    public ShipController() {
+        submarineController = new SubmarineController();
+    }
 
     @FXML
     public void initialize() {
@@ -37,6 +51,28 @@ public class ShipController {
         posXLabel.setText("Position: " + pos_x);
         posTurnLabel.setText("Turned: " + pos_turn);
         createButtons();
+        initializePorts();
+    }
+
+    private void initializePorts() {
+        SerialPort[] portNames = SerialPort.getCommPorts();
+        for (SerialPort port : portNames) {
+            portComboBox.getItems().add(port.getSystemPortName());
+        }
+        if (portComboBox.getItems().isEmpty()) {
+            state.setText("Brak dostępnych portów.");
+        }
+    }
+
+    @FXML
+    public void handleConnect() {
+        String selectedPort = portComboBox.getValue();
+        if (selectedPort != null) {
+            submarineController.initializePort(selectedPort);
+            state.setText("Połączono z: " + selectedPort);
+        } else {
+            state.setText("Proszę wybrać port.");
+        }
     }
 
     private void createButtons() {
