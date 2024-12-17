@@ -5,8 +5,8 @@ import org.example.model.Command;
 public class SubmarineController {
     private final CommService communicationService;
 
-    public SubmarineController(String portName) {
-        this.communicationService = new CommService(portName);
+    public SubmarineController() {
+        this.communicationService = new CommService();
     }
 
     public void sendCommand(Command command) {
@@ -18,7 +18,11 @@ public class SubmarineController {
         return communicationService.readResponse();
     }
 
+    public void initializePort(String portName) {
+        communicationService.initializePort(portName);
+    }
+
     public void close() {
-        communicationService.close();
+        communicationService.closePort();
     }
 }
