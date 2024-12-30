@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.GridPane?>
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="org.example.ShipController"
-            prefHeight="400.0" prefWidth="600.0">
+            fx:id="rootPane"
+            prefHeight="400.0" prefWidth="600.0"
+            stylesheets="@../../style.css">
 
+    <ImageView fx:id="shipImage"  styleClass="borderedImage" />
 
-    <Label fx:id="shipName"  AnchorPane.leftAnchor="10" AnchorPane.topAnchor="10" />
     <VBox alignment="CENTER" spacing="20.0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0">
+        <Label fx:id="shipName"/>
         <Label fx:id="state"/>
         <Label fx:id="posXLabel"/>
         <Label fx:id="posTurnLabel"/>
         <GridPane fx:id="buttonGrid" hgap="10" vgap="10" alignment="CENTER"></GridPane>
-
     </VBox>
 
     <Label text="©2025 Julia Manikowska, Jakub Kubiak, Mateusz Wieczorek, Jan Odważny - All rights reserved" AnchorPane.leftAnchor="20" AnchorPane.bottomAnchor="20"/>
-
 </AnchorPane>

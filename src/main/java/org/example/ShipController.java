@@ -8,12 +8,15 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.util.Duration;
 
 public class ShipController {
 
+    @FXML
+    private AnchorPane rootPane;
     @FXML
     private Label shipName;
     @FXML
@@ -28,6 +31,8 @@ public class ShipController {
     private int pos_x = 0;
     private int pos_turn = 0;
     private int immersion_time;
+    private int og_width = 240;
+    private int og_height = 180;
 
     @FXML
     public void initialize() {
@@ -36,7 +41,26 @@ public class ShipController {
         state.setStyle("-fx-font-size: 25px; -fx-text-fill: blue; -fx-font-weight: bold;");
         posXLabel.setText("Position: " + pos_x);
         posTurnLabel.setText("Turned: " + pos_turn);
+        displayImage();
         createButtons();
+        rootPane.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
+    }
+
+    private void displayImage() {
+
+        Image image = new Image(getClass().getResource("/images/out_view.png").toExternalForm());
+        ImageView imageView = new ImageView(image);
+        imageView.setFitWidth(og_width * 1.2);
+        imageView.setFitHeight(og_height * 1.2);
+        imageView.setPreserveRatio(true);
+        imageView.setLayoutX(15);
+        imageView.setLayoutY(25);
+        imageView.getStyleClass().add("borderedImage");
+        rootPane.getChildren().add(imageView);
+
+        System.out.println("Image displayed in the top-left corner.");
+        System.out.println("ImageView style classes: " + imageView.getStyleClass());
+
     }
 
     private void createButtons() {
