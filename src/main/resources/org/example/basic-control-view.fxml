@@ -3,9 +3,11 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.collections.FXCollections?>
+
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="org.example.ShipController"
@@ -17,6 +19,9 @@
         <Label fx:id="state"/>
         <Label fx:id="posXLabel"/>
         <Label fx:id="posTurnLabel"/>
+        <!--- nowe rzeczy-jk><-->
+        <ComboBox fx:id="portComboBox" editable="false" prefWidth="200.0"></ComboBox>
+        <Button text="Connect" onAction="#handleConnect" prefWidth="100.0"/>
         <GridPane fx:id="buttonGrid" hgap="10" vgap="10" alignment="CENTER"></GridPane>
 
     </VBox>
