@@ -27,6 +27,8 @@ public class ShipController {
     private Label posXLabel;
     @FXML
     private Label posTurnLabel;
+    @FXML
+    private ImageView shipImageView;
 
     private int pos_x = 0;
     private int pos_turn = 0;
@@ -47,20 +49,18 @@ public class ShipController {
     }
 
     private void displayImage() {
-
         Image image = new Image(getClass().getResource("/images/out_view.png").toExternalForm());
-        ImageView imageView = new ImageView(image);
-        imageView.setFitWidth(og_width * 1.2);
-        imageView.setFitHeight(og_height * 1.2);
-        imageView.setPreserveRatio(true);
-        imageView.setLayoutX(15);
-        imageView.setLayoutY(25);
-        imageView.getStyleClass().add("borderedImage");
-        rootPane.getChildren().add(imageView);
+        shipImageView = new ImageView(image);
+        shipImageView.setFitWidth(og_width * 1.2);
+        shipImageView.setFitHeight(og_height * 1.2);
+        shipImageView.setPreserveRatio(true);
+        shipImageView.setLayoutX(15);
+        shipImageView.setLayoutY(25);
+        shipImageView.getStyleClass().add("borderedImage");
+        rootPane.getChildren().add(shipImageView);
 
         System.out.println("Image displayed in the top-left corner.");
-        System.out.println("ImageView style classes: " + imageView.getStyleClass());
-
+        System.out.println("ImageView style classes: " + shipImageView.getStyleClass());
     }
 
     private void createButtons() {
@@ -97,6 +97,7 @@ public class ShipController {
                     immersion_time = Integer.parseInt(textField.getText());
                     state.setText("Immersion");
                     disableControls(true);
+                    changeImageDuringImmersion();
                     startImmersionTimer();
                     textField.clear();
                 } catch (NumberFormatException e) {
@@ -148,6 +149,20 @@ public class ShipController {
         return hbox;
     }
 
+    private void changeImageDuringImmersion() {
+        // Zmień obraz na "in_view.png"
+        shipImageView.setImage(new Image(getClass().getResource("/images/in_view.png").toExternalForm()));
+
+        // Przywróć oryginalny obraz po zanurzeniu
+        Timeline revertImageTimeline = new Timeline(
+                new KeyFrame(Duration.seconds(immersion_time), event -> {
+                    shipImageView.setImage(new Image(getClass().getResource("/images/out_view.png").toExternalForm()));
+                })
+        );
+        revertImageTimeline.setCycleCount(1);
+        revertImageTimeline.play();
+    }
+
     private void disableControls(boolean disable) {
         for (var node : buttonGrid.getChildren()) {
             node.setDisable(disable);
@@ -172,5 +187,6 @@ public class ShipController {
         alert.setContentText(message);
         alert.showAndWait();
     }
+
 
 }
