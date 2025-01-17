@@ -1,6 +1,7 @@
 package org.example;
 
 import javafx.animation.KeyFrame;
+import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
@@ -11,6 +12,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.application.Platform;
 import javafx.util.Duration;
 
 public class ShipController {
@@ -24,34 +26,152 @@ public class ShipController {
     @FXML
     private GridPane buttonGrid;
     @FXML
-    private Label posXLabel;
+    private Label posXLabel; // Label do wyświetlania pozycji
     @FXML
     private Label posTurnLabel;
     @FXML
     private ImageView shipImageView;
+    @FXML
+    private ImageView joystickImageView; // Obrazek joysticka
+    @FXML
+    private Button arrowUpButton; // Przycisk ze strzałką w górę
+    @FXML
+    private Button arrowDownButton; // Przycisk ze strzałką w dół
+    @FXML
+    private Button confirmButton; // Przycisk "Confirm"
 
-    private int pos_x = 0;
+    private int pos_x = 0; // Zmienna przechowująca aktualną pozycję
     private int pos_turn = 0;
     private int immersion_time;
     private int og_width = 240;
     private int og_height = 180;
     private TextField keyboardDisplay;
-    private int is_underwater = 0;
     private GridPane keyboardGrid;
-
+    private int x = 0;
 
     @FXML
     public void initialize() {
-        shipName.setText("Ship Name");
-        state.setText("Emergence");
-        state.setStyle("-fx-font-size: 25px; -fx-text-fill: blue; -fx-font-weight: bold;");
-        posXLabel.setText("Position: " + pos_x);
-        posTurnLabel.setText("Turned: " + pos_turn);
-        displayImage();
-        createButtons();
-        createKeyboard();
-        rootPane.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
+        //shipName.setText("Ship Name");
+        //state.setText("Emergence");
+        //state.setStyle("-fx-font-size: 25px; -fx-text-fill: blue; -fx-font-weight: bold;");
+        //posXLabel.setText("Position: " + pos_x); // Pokazujemy początkową wartość pozycji
+        //posTurnLabel.setText("Turned: " + pos_turn);
+        displayImage();  // Wyświetlenie obrazu statku
+        createKeyboard();  // Tworzenie klawiatury
+        rootPane.setFocusTraversable(true);
+        rootPane.requestFocus();
+
+        // Wczytanie obrazka joysticka (domyślnie base_move_center.png)
+        Image joystickImage = new Image(getClass().getResource("/images/base_move_center.png").toExternalForm());
+        joystickImageView = new ImageView(joystickImage);
+        joystickImageView.setFitWidth(300);
+        joystickImageView.setFitHeight(300);
+        joystickImageView.setPreserveRatio(true);
+
+        // Dodanie joysticka do rootPane
+        rootPane.getChildren().add(joystickImageView);
+        AnchorPane.setBottomAnchor(joystickImageView, 80.0);
+        AnchorPane.setLeftAnchor(joystickImageView, 300.0);
+
+        // Tworzenie przycisków strzałek
+        arrowUpButton = createArrowButton("arrow_up.png", "up");
+        arrowDownButton = createArrowButton("arrow_down.png", "down");
+
+        // Dodanie przycisków do layoutu
+        VBox arrowBox = new VBox(10);
+        arrowBox.getChildren().addAll(arrowUpButton, arrowDownButton);
+        rootPane.getChildren().add(arrowBox);
+        AnchorPane.setBottomAnchor(arrowBox, 130.0);
+        AnchorPane.setLeftAnchor(arrowBox, 500.0); // Przesunięcie przycisków obok joysticka
+
+        // Tworzenie wyświetlacza pozycji po lewej stronie joysticka
+        createPositionDisplay();
     }
+
+    private Button createArrowButton(String imageFileName, String direction) {
+        Button button = new Button();
+        button.setPrefSize(50, 50);
+
+        // Załadowanie obrazka do przycisku
+        Image image = new Image(getClass().getResource("/images/" + imageFileName).toExternalForm());
+        ImageView imageView = new ImageView(image);
+        imageView.setFitWidth(50);
+        imageView.setFitHeight(50);
+        imageView.setPreserveRatio(true);
+
+        button.setGraphic(imageView);
+
+        // Obsługa kliknięcia
+        button.setOnAction(event -> handleArrowButtonPress(direction));
+
+        // Stylizacja
+        button.setStyle("-fx-padding: 0; -fx-background-color: transparent;");
+
+        return button;
+    }
+
+    private void handleArrowButtonPress(String direction) {
+        switch (direction) {
+            case "up":
+                // Zmiana obrazka joysticka na strzałkę w górę
+                Image upImage = new Image(getClass().getResource("/images/base_move_up.png").toExternalForm());
+                joystickImageView.setImage(upImage);
+                // Zwiększanie wartości pos_x
+                x++;
+                posXLabel.setText("Move: " + x); // Zaktualizowanie etykiety z pozycją
+                break;
+            case "down":
+                // Zmiana obrazka joysticka na strzałkę w dół
+                Image downImage = new Image(getClass().getResource("/images/base_move_down.png").toExternalForm());
+                joystickImageView.setImage(downImage);
+                // Zmniejszanie wartości pos_x
+                x--;
+                posXLabel.setText("Move: " + x); // Zaktualizowanie etykiety z pozycją
+                break;
+        }
+    }
+
+    private void createPositionDisplay() {
+        // Tworzenie wyświetlacza pozycji (Label) po lewej stronie joysticka
+        //Label positionLabel = new Label("Position:");
+        //positionLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
+
+        // Tworzenie etykiety do wyświetlania pozycji
+        posXLabel = new Label("Move: " + x);
+        posXLabel.setStyle("-fx-font-size: 18px;");
+
+        // Tworzenie przycisku "Confirm"
+        confirmButton = new Button("Confirm");
+        confirmButton.setPrefSize(80, 40);
+        confirmButton.setStyle("-fx-font-size: 16px;");
+        confirmButton.setOnAction(event -> handleConfirmButtonPress());
+
+        // Umieszczamy wszystkie elementy w VBox
+        VBox positionBox = new VBox(10);
+        positionBox.getChildren().addAll(posXLabel, confirmButton);
+        rootPane.getChildren().add(positionBox);
+
+        // Ustawienie pozycji w AnchorPane
+        AnchorPane.setBottomAnchor(positionBox, 140.0);
+        AnchorPane.setLeftAnchor(positionBox, 290.0); // Po lewej stronie joysticka
+    }
+
+    private void handleConfirmButtonPress() {
+        // Aktualizowanie etykiety wyświetlającej pozycję na podstawie zmienionej wartości pos_x
+        Image joystickImage = new Image(getClass().getResource("/images/base_move_center.png").toExternalForm());
+        joystickImageView.setImage(joystickImage);
+        pos_x += x;
+        //posXLabel.setText("Position: " + pos_x); // Ustawienie nowej pozycji na etykiecie
+
+        // Resetowanie wartości pos_x (zerojemy pozycję)
+        x = 0;
+
+        // Ponownie ustawienie wartości pozycji na "Move" w górnej części ekranu
+        posXLabel.setText("Move: " + x); // Zresetowanie wartości do 0
+
+        System.out.println("Position confirmed: " + pos_x);  // Potwierdzenie w konsoli
+    }
+
 
     private void displayImage() {
         Image image = new Image(getClass().getResource("/images/out_view.png").toExternalForm());
@@ -105,9 +225,8 @@ public class ShipController {
         keyboardBox.getChildren().addAll(keyboardDisplay, keyboardGrid);
         rootPane.getChildren().add(keyboardBox);
         AnchorPane.setTopAnchor(keyboardBox, 20.0);
-        AnchorPane.setRightAnchor(keyboardBox, 20.0);
+        AnchorPane.setRightAnchor(keyboardBox, 60.0);
     }
-
 
     private Button createImageButton(String imageFileName) {
         Button button = new Button();
@@ -140,7 +259,7 @@ public class ShipController {
                 System.out.println("OK button pressed, value: " + keyboardDisplay.getText());
                 try {
                     immersion_time = Integer.parseInt(keyboardDisplay.getText());
-                    state.setText("Immersion");
+                    //state.setText("Immersion");
                     disableControls(true);
                     changeImageDuringImmersion();
                     startImmersionTimer();
@@ -164,94 +283,6 @@ public class ShipController {
         }
     }
 
-
-
-    private void createButtons() {
-        HBox button1 = createButtonWithTextField("Move forward");
-        HBox button2 = createButtonWithTextField("Turn left");
-        HBox button3 = createButtonWithTextField("Immersion");
-        HBox button4 = createButtonWithTextField("Move back");
-        HBox button5 = createButtonWithTextField("Turn right");
-        Button button6 = new Button("Help");
-
-        button6.setPrefSize(150, 50);
-
-        buttonGrid.add(button1, 0, 0);
-        buttonGrid.add(button2, 1, 0);
-        buttonGrid.add(button3, 2, 0);
-        buttonGrid.add(button4, 0, 1);
-        buttonGrid.add(button5, 1, 1);
-        buttonGrid.add(button6, 2, 1);
-    }
-
-    private HBox createButtonWithTextField(String buttonText) {
-        HBox hbox = new HBox(0);
-        hbox.setAlignment(Pos.CENTER);
-
-        Button button = new Button(buttonText);
-        button.setPrefSize(100, 50);
-
-        TextField textField = new TextField();
-        textField.setPrefSize(50, 50);
-
-        button.setOnAction(event -> {
-            if (buttonText.equals("Immersion")) {
-                try {
-                    immersion_time = Integer.parseInt(textField.getText());
-                    state.setText("Immersion");
-                    disableControls(true);
-                    changeImageDuringImmersion();
-                    startImmersionTimer();
-                    textField.clear();
-                } catch (NumberFormatException e) {
-                    showErrorAlert("Invalid input", "Please enter a valid number of seconds.");
-                }
-            } else if (buttonText.equals("Move forward")) {
-                try {
-                    int moveAmount = Integer.parseInt(textField.getText());
-                    pos_x += moveAmount;
-                    posXLabel.setText("Position: " + pos_x);
-                    textField.clear();
-                } catch (NumberFormatException e) {
-                    showErrorAlert("Invalid input", "Please enter a valid number.");
-                }
-            } else if (buttonText.equals("Move back")) {
-                try {
-                    int moveAmount = Integer.parseInt(textField.getText());
-                    pos_x -= moveAmount;
-                    posXLabel.setText("Position: " + pos_x);
-                    textField.clear();
-                } catch (NumberFormatException e) {
-                    showErrorAlert("Invalid input", "Please enter a valid number.");
-                }
-            } else if (buttonText.equals("Turn left")) {
-                try {
-                    int turnAmount = Integer.parseInt(textField.getText());
-                    pos_turn -= turnAmount;
-                    posTurnLabel.setText("Turned: " + pos_turn);
-                    textField.clear();
-                } catch (NumberFormatException e) {
-                    showErrorAlert("Invalid input", "Please enter a valid number.");
-                }
-            } else if (buttonText.equals("Turn right")) {
-                try {
-                    int turnAmount = Integer.parseInt(textField.getText());
-                    pos_turn += turnAmount;
-                    posTurnLabel.setText("Turned: " + pos_turn);
-                    textField.clear();
-                } catch (NumberFormatException e) {
-                    showErrorAlert("Invalid input", "Please enter a valid number.");
-                }
-            } else {
-                textField.clear();
-            }
-        });
-
-        hbox.getChildren().addAll(button, textField);
-
-        return hbox;
-    }
-
     private void changeImageDuringImmersion() {
         // Zmień obraz na "in_view.png"
         shipImageView.setImage(new Image(getClass().getResource("/images/in_view.png").toExternalForm()));
@@ -267,15 +298,26 @@ public class ShipController {
     }
 
     private void disableControls(boolean disable) {
+        // Disable buttons in the button grid
         for (var node : buttonGrid.getChildren()) {
             node.setDisable(disable);
         }
+
+        // Disable keyboard grid buttons
         if (keyboardGrid != null) {
             for (var node : keyboardGrid.getChildren()) {
                 node.setDisable(disable);
             }
         }
+
+        // Disable the text field for keyboard input
         keyboardDisplay.setDisable(disable);
+
+        // Disable joystick and arrow buttons
+        joystickImageView.setDisable(disable); // Disabling joystick image
+        arrowUpButton.setDisable(disable);     // Disabling the arrow up button
+        arrowDownButton.setDisable(disable);   // Disabling the arrow down button
+        confirmButton.setDisable(disable);
     }
 
 
@@ -297,6 +339,6 @@ public class ShipController {
         alert.setContentText(message);
         alert.showAndWait();
     }
-
-
 }
+
+
