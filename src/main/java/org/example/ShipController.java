@@ -5,10 +5,7 @@ import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -47,6 +44,9 @@ public class ShipController {
     private Button arrowRightButton; // Przycisk ze strzałką w prawo
     @FXML
     private Button confirmButton2; // Przycisk "Confirm" 2
+    @FXML
+    private TextArea logTextArea; // Pole do wyświetlania logów
+
 
     private int pos_x = 0; // Zmienna przechowująca aktualną pozycję
     private int pos_turn = 0;
@@ -69,6 +69,22 @@ public class ShipController {
         createKeyboard();  // Tworzenie klawiatury
         rootPane.setFocusTraversable(true);
         rootPane.requestFocus();
+
+        logTextArea = new TextArea();
+        logTextArea.setEditable(false); // Logi nie powinny być edytowalne
+        logTextArea.setPrefHeight(250); // Ustal wysokość logów
+        logTextArea.setPrefWidth(200);
+        logTextArea.setStyle("-fx-control-inner-background: black; " + // Tło tekstu
+                "-fx-text-fill: white; " +                // Kolor tekstu
+                "-fx-font-size: 14px; " +                // Rozmiar czcionki
+                "-fx-border-color: gray; " +             // Obramowanie
+                "-fx-border-width: 2px;");
+
+        rootPane.getChildren().add(logTextArea);
+        AnchorPane.setTopAnchor(logTextArea, 20.0);
+        AnchorPane.setRightAnchor(logTextArea, 10.0);
+
+        logMessage("Application initialized.");
 
         // Wczytanie obrazka joysticka (domyślnie base_move_center.png)
         Image joystickImage = new Image(getClass().getResource("/images/base_move_center.png").toExternalForm());
@@ -115,6 +131,14 @@ public class ShipController {
         createPositionDisplay();
         createPositionDisplay2();
     }
+
+    private void logMessage(String message) {
+        Platform.runLater(() -> {
+            logTextArea.appendText(message + "\n"); // Wyświetla log w interfejsie
+        });
+        System.out.println(message); // Wyświetla log w stdout
+    }
+
 
     private Button createArrowButton(String imageFileName, String direction) {
         Button button = new Button();
@@ -238,7 +262,7 @@ public class ShipController {
         // Ponownie ustawienie wartości pozycji na "Move" w górnej części ekranu
         posXLabel.setText("Move: " + x); // Zresetowanie wartości do 0
 
-        System.out.println("Position confirmed: " + pos_x);  // Potwierdzenie w konsoli
+        logMessage("Position confirmed: " + pos_x);  // Potwierdzenie w konsoli
     }
 
     private void handleConfirmButtonPress2() {
@@ -253,7 +277,7 @@ public class ShipController {
         // Ponownie ustawienie wartości pozycji na "Move" w górnej części ekranu
         posTurnLabel.setText("Turn: " + turn); // Zresetowanie wartości do 0
 
-        System.out.println("Turn confirmed: " + pos_turn);  // Potwierdzenie w konsoli
+        logMessage("Turn confirmed: " + pos_turn);  // Potwierdzenie w konsoli
     }
 
 
@@ -340,7 +364,7 @@ public class ShipController {
     private void handleKeyboardButtonPress(String label) {
         switch (label) {
             case "keyboard_ok":
-                System.out.println("OK button pressed, value: " + keyboardDisplay.getText());
+                logMessage("OK button pressed, value: " + keyboardDisplay.getText());
                 try {
                     immersion_time = Integer.parseInt(keyboardDisplay.getText());
                     //state.setText("Immersion");
@@ -353,7 +377,7 @@ public class ShipController {
                 }
                 break;
             case "keyboard_x":
-                System.out.println("Cancel button pressed");
+                logMessage("Cancel button pressed");
                 keyboardDisplay.clear(); // Clear the display
                 break;
             default:
@@ -362,7 +386,7 @@ public class ShipController {
                     String number = label.substring(9); // Extract the number after "keyboard_"
                     keyboardDisplay.appendText(number);
                 }
-                System.out.println("Number button pressed: " + label);
+                logMessage("Number button pressed: " + label);
                 break;
         }
     }
