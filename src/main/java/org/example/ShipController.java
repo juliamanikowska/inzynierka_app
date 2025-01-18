@@ -1,5 +1,12 @@
 package org.example;
 
+import javafx.scene.control.*;
+import org.example.controller.CommService;
+import org.example.controller.SubmarineController;
+import org.example.model.Command;
+import com.fazecast.jSerialComm.SerialPort;
+
+import javafx.collections.FXCollections;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
@@ -9,7 +16,10 @@ import javafx.scene.layout.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.application.Platform;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.util.Duration;
+import javafx.scene.layout.GridPane;
 
 public class ShipController {
     @FXML
@@ -77,6 +87,14 @@ public class ShipController {
     private GridPane keyboardGrid;  //grid for keyboard (immersion)
     private int x = 0;  //value of move next to move joystick
     private int turn =0;  //value of turn next to turn joystick
+
+    private SubmarineController submarineController;
+    private CommService commService;
+
+
+    public ShipController() {
+        submarineController = new SubmarineController();
+    }
 
     @FXML
     public void initialize() {
