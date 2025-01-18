@@ -5,6 +5,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.VBox?>
 
+<?import javafx.scene.layout.HBox?>
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="org.example.ShipController"
@@ -15,11 +16,32 @@
 
     <ImageView fx:id="shipImage" styleClass="borderedImage" />
 
-    <VBox alignment="CENTER" spacing="20.0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0">
-        <Label fx:id="shipName"/>
-        <Label fx:id="state"/>
-        <!--<Label fx:id="posXLabel"/>-->
-        <!--<Label fx:id="posTurnLabel"/>-->
+    <VBox spacing="20.0" AnchorPane.leftAnchor="320" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="30" AnchorPane.bottomAnchor="0">
+        <HBox spacing="20.0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0">
+            <Label fx:id="shipName"/>
+            <Label fx:id="state"/>
+        </HBox>
+        <HBox spacing="20.0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0">
+            <Label fx:id="pres"/>
+            <Label fx:id="depth"/>
+        </HBox>
+        <HBox spacing="20.0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0">
+            <Label fx:id="latitude"/>
+            <Label fx:id="longitude"/>
+        </HBox>
+        <HBox spacing="20.0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0">
+            <Label fx:id="battery"/>
+            <Label fx:id="temperature"/>
+        </HBox>
+        <HBox spacing="20.0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0">
+            <Label fx:id="pitch"/>
+            <Label fx:id="roll"/>
+            <Label fx:id="yaw"/>
+        </HBox>
+        <HBox spacing="20.0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0">
+            <Label fx:id="engine"/>
+            <Label fx:id="direction"/>
+        </HBox>
     </VBox>
 
     <Label text="©2025 Julia Manikowska, Jakub Kubiak, Mateusz Wieczorek, Jan Odważny - All rights reserved" AnchorPane.leftAnchor="20" AnchorPane.bottomAnchor="20"/>

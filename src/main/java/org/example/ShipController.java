@@ -15,9 +15,32 @@ public class ShipController {
     @FXML
     private AnchorPane rootPane;  //anchors for display
     @FXML
+    private Label state;  //state - emergence or immersion
+    @FXML
     private Label shipName;  //name of connected ship
     @FXML
-    private Label state;  //state - emergence or immersion
+    private Label pres;  //pressure
+    @FXML
+    private Label depth;  //depth
+    @FXML
+    private Label temperature;  //temperature
+    @FXML
+    private Label latitude;  //latitude
+    @FXML
+    private Label longitude;  //longitude
+    @FXML
+    private Label pitch;  //pitch gyro
+    @FXML
+    private Label roll;  //roll gyro
+    @FXML
+    private Label yaw;  //yaw gyro
+    @FXML
+    private Label battery;  //battery state in %
+    @FXML
+    private Label engine;  //engine power
+    @FXML
+    private Label direction;  //ship direction
+
     @FXML
     private Label posXLabel;  //label next to move joystick
     @FXML
@@ -42,6 +65,8 @@ public class ShipController {
     private Button confirmTurnButton;  //confirm button next to turn joystick
     @FXML
     private TextArea logTextArea;  //logs area
+    @FXML
+    private Button helpButton;  //help button
 
     private int pos_x = 0;  //global position move
     private int pos_turn = 0;  //global turn
@@ -55,12 +80,8 @@ public class ShipController {
 
     @FXML
     public void initialize() {
-        //shipName.setText("Ship Name");
-        //state.setText("Emergence");
-        //state.setStyle("-fx-font-size: 25px; -fx-text-fill: blue; -fx-font-weight: bold;");
-        //posXLabel.setText("Position: " + pos_x); // Pokazujemy początkową wartość pozycji
-        //posTurnLabel.setText("Turned: " + pos_turn);
-
+        defaultShipInfo();  //default values
+        showShipInfo();  //displaying shipInfo
         displayImage();  //displaying shipImage
         createKeyboard();  //displaying immersion keyboard
 
@@ -103,6 +124,14 @@ public class ShipController {
         AnchorPane.setBottomAnchor(joystickTurnImageView, 125.0);
         AnchorPane.setRightAnchor(joystickTurnImageView, 15.0);
 
+        //help
+        helpButton = createHelpButton();
+        VBox helpBox = new VBox(10);
+        helpBox.getChildren().addAll(helpButton);
+        rootPane.getChildren().add(helpBox);
+        AnchorPane.setBottomAnchor(helpBox, 5.0);
+        AnchorPane.setRightAnchor(helpBox, 5.0);
+
         //arrows next to joysticks
         arrowUpButton = createArrowButton("arrow_up.png", "up");
         arrowDownButton = createArrowButton("arrow_down.png", "down");
@@ -125,12 +154,57 @@ public class ShipController {
         createTurnDisplay();  //turn joystick
     }
 
+    //Setting default values for ship info
+    private void defaultShipInfo(){
+        shipName.setText("Ship Name: ShipName");
+        state.setText("State: Emergence");
+        pres.setText("Pres: 0.0");
+        depth.setText("Depth: 0.0");
+        temperature.setText("Temp: 0.0");
+        latitude.setText("Latitude: 0.0");
+        longitude.setText("Longitude: 0.0");
+        pitch.setText("Pitch: 0");
+        roll.setText("Roll: 0");
+        yaw.setText("Yaw: 0");
+        battery.setText("Battery: 100");
+        engine.setText("Engine: 0");
+        direction.setText("Direction: 0");
+    }
+
+    //Setting ship info values
+    private void showShipInfo(){
+        //TODO pobieranie od okrętu shipName,pres,depth,temperature,latitude,longitude,pitch,roll,yaw,battery,engine,direction
+    }
+
     //Showing logs (stdout) in app
     private void logMessage(String message) {
         Platform.runLater(() -> {
             logTextArea.appendText(message + "\n");
         });
         System.out.println(message);
+    }
+
+    //Creating help button
+    private Button createHelpButton(){
+        Button button = new Button();
+        button.setPrefSize(50, 50);
+
+        Image image = new Image(getClass().getResource("/images/help_icon.png").toExternalForm());
+        ImageView imageView = new ImageView(image);
+        imageView.setFitWidth(50);
+        imageView.setFitHeight(50);
+        imageView.setPreserveRatio(true);
+        button.setGraphic(imageView);
+
+        button.setOnAction(event -> handleHelpButton());
+        button.setStyle("-fx-padding: 0; -fx-background-color: transparent;");
+
+        return button;
+    }
+
+    //Handling help button
+    private void handleHelpButton(){
+
     }
 
     //Creating image buttons for arrows next to joysticks
@@ -223,17 +297,11 @@ public class ShipController {
         joystickMoveImageView.setImage(joystickMoveImage);
         pos_x += x;
 
-        switch(x){
-            case 0:
-                logMessage("You can't move by 0");
-                break;
-            default:
-                logMessage("Sending command: move by " + x);
-                //disableControls(true);
-                //TODO przesyłanie do okretu wartosci "x" czyli o ile się ruszyć przod(x>0)/tyl(x<0)
-                //TODO otrzymywanie komunikatu z okrętu że zakończył manewr, użyj "disableControls" do blokowania wszystkiego
-                //disableControls(false);
-                break;
+        if (x==0) logMessage("You can't move by 0");
+        else if (x<-100 || x>100) logMessage("Move must be in range (-100, 100)");
+        else{
+            logMessage("Sending command: move by " + x);
+            //TODO przesyłanie do okretu wartosci "x" czyli o ile się ruszyć przod(x>0)/tyl(x<0)
         }
 
         x = 0;
@@ -247,15 +315,11 @@ public class ShipController {
         joystickTurnImageView.setImage(joystickTurnImage);
         pos_turn += turn;
 
-        switch (turn){
-            case 0:
-                break;
-            default:
-                logMessage("Sending command: turn by "+ turn);
-                //disableControls(true);
-                //TODO przesyłanie do okretu wartosci "turn" czyli o ile się obrócić lewo(x<0)/prawo(x>0)
-                //TODO otrzymywanie komunikatu z okrętu że zakończył manewr, użyj "disableControls" do blokowania wszystkiego
-                //disableControls(false);
+        if (turn==0) logMessage("You can't turn by 0");
+        else if (turn<-40 || turn>40) logMessage("Turn must be in range (-40, 40)");
+        else{
+            logMessage("Sending command: turn by "+ turn);
+            //TODO przesyłanie do okretu wartosci "turn" czyli o ile się obrócić lewo(x<0)/prawo(x>0)
         }
 
         turn = 0;
@@ -339,18 +403,25 @@ public class ShipController {
             case "keyboard_ok":
                 logMessage("Sending command: immersion for " + keyboardDisplay.getText() + " sec");
                 try {
-                    immersion_time = Integer.parseInt(keyboardDisplay.getText());
-                    //state.setText("Immersion");
-                    //TODO obsługa wysyłania do okrętu wartości "immersion_time", czyli na ile sekund ma się zanurzyć
-                    //TODO otrzymywanie komunikatu z okrętu że zakończył manewr, użyj "disableControls" do blokowania wszystkiego
-                    // zmodyfikuj to ponizej do "} catch", bo teraz używa odliczania w apce na ile jest disable
-                    disableControls(true);
-                    logMessage("Immersion for " + immersion_time + "sec");
-                    logMessage("Controls disabled");
-                    changeImageDuringImmersion();
-                    startImmersionTimer();
-                    keyboardDisplay.clear();
-                    //logMessage("Controls enabled");
+                    if (keyboardDisplay.getText()=="0"){
+                        logMessage("You can't have immersion for 0");
+                        break;
+                    }
+                    else{
+                        immersion_time = Integer.parseInt(keyboardDisplay.getText());
+                        state.setText("Immersion");
+                        //TODO obsługa wysyłania do okrętu wartości "immersion_time", czyli na ile sekund ma się zanurzyć
+                        //TODO otrzymywanie komunikatu z okrętu że zakończył manewr, użyj "disableControls" do blokowania wszystkiego
+                        // zmodyfikuj to ponizej do "} } catch", bo teraz używa odliczania w apce na ile jest disable
+                        disableControls(true);
+                        logMessage("Immersion for " + immersion_time + "sec");
+                        logMessage("Controls disabled");
+                        logMessage("Immersion process may take a while...");
+                        changeImageDuringImmersion();
+                        startImmersionTimer();
+                        keyboardDisplay.clear();
+                        //logMessage("Controls enabled");
+                    }
                 } catch (NumberFormatException e) {
                     showErrorAlert("Invalid input", "Please enter a valid number of seconds.");
                 }
@@ -404,7 +475,7 @@ public class ShipController {
     private void startImmersionTimer() {
         Timeline timer = new Timeline(
                 new KeyFrame(Duration.seconds(immersion_time), event -> {
-                    //state.setText("Emergence");
+                    state.setText("Emergence");
                     disableControls(false);
                     logMessage("Controls enabled");
                 })
