@@ -1,7 +1,6 @@
 package org.example;
 
 import javafx.animation.KeyFrame;
-import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
@@ -13,50 +12,46 @@ import javafx.application.Platform;
 import javafx.util.Duration;
 
 public class ShipController {
+    @FXML
+    private AnchorPane rootPane;  //anchors for display
+    @FXML
+    private Label shipName;  //name of connected ship
+    @FXML
+    private Label state;  //state - emergence or immersion
+    @FXML
+    private Label posXLabel;  //label next to move joystick
+    @FXML
+    private Label posTurnLabel;  //label next to turn joystick
+    @FXML
+    private ImageView shipImageView;  //image/view of the "outside"
+    @FXML
+    private ImageView joystickMoveImageView;  //view for move fwd/back joystick
+    @FXML
+    private ImageView joystickTurnImageView;  //view for turn left/right joystick
+    @FXML
+    private Button arrowUpButton;  //up button next to move joystick
+    @FXML
+    private Button arrowDownButton;  //down button next to move joystick
+    @FXML
+    private Button confirmMoveButton;  //confirm button next to move joystick
+    @FXML
+    private Button arrowLeftButton;  //left button next to turn joystick
+    @FXML
+    private Button arrowRightButton;  //right button next to turn joystick
+    @FXML
+    private Button confirmTurnButton;  //confirm button next to turn joystick
+    @FXML
+    private TextArea logTextArea;  //logs area
 
-    @FXML
-    private AnchorPane rootPane;
-    @FXML
-    private Label shipName;
-    @FXML
-    private Label state;
-    @FXML
-    private GridPane buttonGrid;
-    @FXML
-    private Label posXLabel; // Label do wyświetlania pozycji
-    @FXML
-    private Label posTurnLabel;
-    @FXML
-    private ImageView shipImageView;
-    @FXML
-    private ImageView joystickImageView; // Obrazek joysticka
-    @FXML
-    private ImageView joystickImageView2;
-    @FXML
-    private Button arrowUpButton; // Przycisk ze strzałką w górę
-    @FXML
-    private Button arrowDownButton; // Przycisk ze strzałką w dół
-    @FXML
-    private Button confirmButton; // Przycisk "Confirm"
-    @FXML
-    private Button arrowLeftButton; // Przycisk ze strzałką w lewo
-    @FXML
-    private Button arrowRightButton; // Przycisk ze strzałką w prawo
-    @FXML
-    private Button confirmButton2; // Przycisk "Confirm" 2
-    @FXML
-    private TextArea logTextArea; // Pole do wyświetlania logów
-
-
-    private int pos_x = 0; // Zmienna przechowująca aktualną pozycję
-    private int pos_turn = 0;
-    private int immersion_time;
-    private int og_width = 240;
-    private int og_height = 180;
-    private TextField keyboardDisplay;
-    private GridPane keyboardGrid;
-    private int x = 0;
-    private int turn =0;
+    private int pos_x = 0;  //global position move
+    private int pos_turn = 0;  //global turn
+    private int immersion_time;  //immersion time TODO usunąć jak będzie obsługa otrzymywania info od okrętu o zakończeniu manewru
+    private int og_width = 240;  //original size of shipImage
+    private int og_height = 180;  //original size of shipImage
+    private TextField keyboardDisplay;  //display next to immersion keyboard
+    private GridPane keyboardGrid;  //grid for keyboard (immersion)
+    private int x = 0;  //value of move next to move joystick
+    private int turn =0;  //value of turn next to turn joystick
 
     @FXML
     public void initialize() {
@@ -65,61 +60,60 @@ public class ShipController {
         //state.setStyle("-fx-font-size: 25px; -fx-text-fill: blue; -fx-font-weight: bold;");
         //posXLabel.setText("Position: " + pos_x); // Pokazujemy początkową wartość pozycji
         //posTurnLabel.setText("Turned: " + pos_turn);
-        displayImage();  // Wyświetlenie obrazu statku
-        createKeyboard();  // Tworzenie klawiatury
+
+        displayImage();  //displaying shipImage
+        createKeyboard();  //displaying immersion keyboard
+
         rootPane.setFocusTraversable(true);
         rootPane.requestFocus();
 
+        //logs area
         logTextArea = new TextArea();
-        logTextArea.setEditable(false); // Logi nie powinny być edytowalne
-        logTextArea.setPrefHeight(250); // Ustal wysokość logów
+        logTextArea.setEditable(false);
+        logTextArea.setPrefHeight(250);
         logTextArea.setPrefWidth(200);
-        logTextArea.setStyle("-fx-control-inner-background: black; " + // Tło tekstu
-                "-fx-text-fill: white; " +                // Kolor tekstu
-                "-fx-font-size: 14px; " +                // Rozmiar czcionki
-                "-fx-border-color: gray; " +             // Obramowanie
+        logTextArea.setStyle("-fx-control-inner-background: black; " +
+                "-fx-text-fill: white; " +
+                "-fx-font-size: 14px; " +
+                "-fx-border-color: gray; " +
                 "-fx-border-width: 2px;");
-
         rootPane.getChildren().add(logTextArea);
         AnchorPane.setTopAnchor(logTextArea, 20.0);
         AnchorPane.setRightAnchor(logTextArea, 10.0);
 
         logMessage("Application initialized.");
 
-        // Wczytanie obrazka joysticka (domyślnie base_move_center.png)
-        Image joystickImage = new Image(getClass().getResource("/images/base_move_center.png").toExternalForm());
-        joystickImageView = new ImageView(joystickImage);
-        joystickImageView.setFitWidth(300);
-        joystickImageView.setFitHeight(300);
-        joystickImageView.setPreserveRatio(true);
+        //move joystick
+        Image joystickMoveImage = new Image(getClass().getResource("/images/base_move_center.png").toExternalForm());
+        joystickMoveImageView = new ImageView(joystickMoveImage);
+        joystickMoveImageView.setFitWidth(300);
+        joystickMoveImageView.setFitHeight(300);
+        joystickMoveImageView.setPreserveRatio(true);
+        rootPane.getChildren().add(joystickMoveImageView);
+        AnchorPane.setBottomAnchor(joystickMoveImageView, 80.0);
+        AnchorPane.setLeftAnchor(joystickMoveImageView, 190.0);
 
-        Image joystickImage2 = new Image(getClass().getResource("/images/base_turn_center.png").toExternalForm());
-        joystickImageView2 = new ImageView(joystickImage2);
-        joystickImageView2.setFitWidth(200);
-        joystickImageView2.setFitHeight(200);
-        joystickImageView2.setPreserveRatio(true);
+        //turn joystick
+        Image joystickTurnImage = new Image(getClass().getResource("/images/base_turn_center.png").toExternalForm());
+        joystickTurnImageView = new ImageView(joystickTurnImage);
+        joystickTurnImageView.setFitWidth(200);
+        joystickTurnImageView.setFitHeight(200);
+        joystickTurnImageView.setPreserveRatio(true);
+        rootPane.getChildren().add(joystickTurnImageView);
+        AnchorPane.setBottomAnchor(joystickTurnImageView, 125.0);
+        AnchorPane.setRightAnchor(joystickTurnImageView, 15.0);
 
-        // Dodanie joysticka do rootPane
-        rootPane.getChildren().add(joystickImageView);
-        AnchorPane.setBottomAnchor(joystickImageView, 80.0);
-        AnchorPane.setLeftAnchor(joystickImageView, 190.0);
-
-        rootPane.getChildren().add(joystickImageView2);
-        AnchorPane.setBottomAnchor(joystickImageView2, 125.0);
-        AnchorPane.setRightAnchor(joystickImageView2, 15.0);
-
-        // Tworzenie przycisków strzałek
+        //arrows next to joysticks
         arrowUpButton = createArrowButton("arrow_up.png", "up");
         arrowDownButton = createArrowButton("arrow_down.png", "down");
         arrowLeftButton = createArrowButton("arrow_left.png", "left");
         arrowRightButton = createArrowButton("arrow_right.png", "right");
 
-        // Dodanie przycisków do layoutu
         VBox arrowBox = new VBox(10);
         arrowBox.getChildren().addAll(arrowUpButton, arrowDownButton);
         rootPane.getChildren().add(arrowBox);
         AnchorPane.setBottomAnchor(arrowBox, 130.0);
-        AnchorPane.setLeftAnchor(arrowBox, 390.0); // Przesunięcie przycisków obok joysticka
+        AnchorPane.setLeftAnchor(arrowBox, 390.0);
 
         HBox arrowBox2 = new HBox(60);
         arrowBox2.getChildren().addAll(arrowLeftButton, arrowRightButton);
@@ -127,160 +121,149 @@ public class ShipController {
         AnchorPane.setBottomAnchor(arrowBox2, 70.0);
         AnchorPane.setRightAnchor(arrowBox2, 35.0);
 
-        // Tworzenie wyświetlacza pozycji po lewej stronie joysticka
-        createPositionDisplay();
-        createPositionDisplay2();
+        createPositionDisplay();  //move joystick
+        createTurnDisplay();  //turn joystick
     }
 
+    //Showing logs (stdout) in app
     private void logMessage(String message) {
         Platform.runLater(() -> {
-            logTextArea.appendText(message + "\n"); // Wyświetla log w interfejsie
+            logTextArea.appendText(message + "\n");
         });
-        System.out.println(message); // Wyświetla log w stdout
+        System.out.println(message);
     }
 
-
+    //Creating image buttons for arrows next to joysticks
     private Button createArrowButton(String imageFileName, String direction) {
         Button button = new Button();
         button.setPrefSize(50, 50);
 
-        // Załadowanie obrazka do przycisku
         Image image = new Image(getClass().getResource("/images/" + imageFileName).toExternalForm());
         ImageView imageView = new ImageView(image);
         imageView.setFitWidth(50);
         imageView.setFitHeight(50);
         imageView.setPreserveRatio(true);
-
         button.setGraphic(imageView);
 
-        // Obsługa kliknięcia
         button.setOnAction(event -> handleArrowButtonPress(direction));
-
-        // Stylizacja
         button.setStyle("-fx-padding: 0; -fx-background-color: transparent;");
 
         return button;
     }
 
+    //Handling buttons with arrows
     private void handleArrowButtonPress(String direction) {
         switch (direction) {
             case "up":
-                // Zmiana obrazka joysticka na strzałkę w górę
                 Image upImage = new Image(getClass().getResource("/images/base_move_up.png").toExternalForm());
-                joystickImageView.setImage(upImage);
-                // Zwiększanie wartości pos_x
+                joystickMoveImageView.setImage(upImage);
                 x++;
-                posXLabel.setText("Move: " + x); // Zaktualizowanie etykiety z pozycją
+                posXLabel.setText("Move: " + x);
                 break;
             case "down":
-                // Zmiana obrazka joysticka na strzałkę w dół
                 Image downImage = new Image(getClass().getResource("/images/base_move_down.png").toExternalForm());
-                joystickImageView.setImage(downImage);
-                // Zmniejszanie wartości pos_x
+                joystickMoveImageView.setImage(downImage);
                 x--;
-                posXLabel.setText("Move: " + x); // Zaktualizowanie etykiety z pozycją
+                posXLabel.setText("Move: " + x);
                 break;
             case "left":
-                // Zmiana obrazka joysticka na strzałkę w dół
                 Image leftImage = new Image(getClass().getResource("/images/base_turn_left.png").toExternalForm());
-                joystickImageView2.setImage(leftImage);
-                // Zmniejszanie wartości pos_x
+                joystickTurnImageView.setImage(leftImage);
                 turn--;
-                posTurnLabel.setText("Turn: " + turn); // Zaktualizowanie etykiety z pozycją
+                posTurnLabel.setText("Turn: " + turn);
                 break;
             case "right":
-                // Zmiana obrazka joysticka na strzałkę w dół
                 Image rightImage = new Image(getClass().getResource("/images/base_turn_right.png").toExternalForm());
-                joystickImageView2.setImage(rightImage);
-                // Zmniejszanie wartości pos_x
+                joystickTurnImageView.setImage(rightImage);
                 turn++;
-                posTurnLabel.setText("Turn: " + turn); // Zaktualizowanie etykiety z pozycją
+                posTurnLabel.setText("Turn: " + turn);
                 break;
         }
     }
 
+    //Displaying value of move next to fwd/back move joystick
     private void createPositionDisplay() {
-        // Tworzenie wyświetlacza pozycji (Label) po lewej stronie joysticka
-        //Label positionLabel = new Label("Position:");
-        //positionLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
-
-        // Tworzenie etykiety do wyświetlania pozycji
         posXLabel = new Label("Move: " + x);
         posXLabel.setStyle("-fx-font-size: 18px;");
 
-        // Tworzenie przycisku "Confirm"
-        confirmButton = new Button("Confirm");
-        confirmButton.setPrefSize(80, 40);
-        confirmButton.setStyle("-fx-font-size: 16px;");
-        confirmButton.setOnAction(event -> handleConfirmButtonPress());
+        confirmMoveButton = new Button("Confirm");
+        confirmMoveButton.setPrefSize(80, 40);
+        confirmMoveButton.setStyle("-fx-font-size: 16px;");
+        confirmMoveButton.setOnAction(event -> handleConfirmMoveButtonPress());
 
-        // Umieszczamy wszystkie elementy w VBox
         VBox positionBox = new VBox(10);
-        positionBox.getChildren().addAll(posXLabel, confirmButton);
+        positionBox.getChildren().addAll(posXLabel, confirmMoveButton);
         rootPane.getChildren().add(positionBox);
 
-        // Ustawienie pozycji w AnchorPane
         AnchorPane.setBottomAnchor(positionBox, 140.0);
-        AnchorPane.setLeftAnchor(positionBox, 180.0); // Po lewej stronie joysticka
+        AnchorPane.setLeftAnchor(positionBox, 180.0);
     }
 
-    private void createPositionDisplay2() {
-        // Tworzenie wyświetlacza pozycji (Label) po lewej stronie joysticka
-        //Label positionLabel = new Label("Position:");
-        //positionLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
-
-        // Tworzenie etykiety do wyświetlania pozycji
+    //Displaying value of turn next to left/right turn joystick
+    private void createTurnDisplay() {
         posTurnLabel = new Label("Turn: " + x);
         posTurnLabel.setStyle("-fx-font-size: 18px;");
 
-        // Tworzenie przycisku "Confirm"
-        confirmButton2 = new Button("Confirm");
-        confirmButton2.setPrefSize(80, 40);
-        confirmButton2.setStyle("-fx-font-size: 16px;");
-        confirmButton2.setOnAction(event -> handleConfirmButtonPress2());
+        confirmTurnButton = new Button("Confirm");
+        confirmTurnButton.setPrefSize(80, 40);
+        confirmTurnButton.setStyle("-fx-font-size: 16px;");
+        confirmTurnButton.setOnAction(event -> handleConfirmTurnButtonPress());
 
-        // Umieszczamy wszystkie elementy w VBox
         VBox positionBox = new VBox(10);
-        positionBox.getChildren().addAll(posTurnLabel, confirmButton2);
+        positionBox.getChildren().addAll(posTurnLabel, confirmTurnButton);
         rootPane.getChildren().add(positionBox);
 
-        // Ustawienie pozycji w AnchorPane
         AnchorPane.setBottomAnchor(positionBox, 140.0);
-        AnchorPane.setRightAnchor(positionBox, 220.0); // Po lewej stronie joysticka
+        AnchorPane.setRightAnchor(positionBox, 220.0);
     }
 
-    private void handleConfirmButtonPress() {
-        // Aktualizowanie etykiety wyświetlającej pozycję na podstawie zmienionej wartości pos_x
-        Image joystickImage = new Image(getClass().getResource("/images/base_move_center.png").toExternalForm());
-        joystickImageView.setImage(joystickImage);
+    //Handling confirmation of move fwd/back joystick
+    private void handleConfirmMoveButtonPress() {
+        Image joystickMoveImage = new Image(getClass().getResource("/images/base_move_center.png").toExternalForm());
+        joystickMoveImageView.setImage(joystickMoveImage);
         pos_x += x;
-        //posXLabel.setText("Position: " + pos_x); // Ustawienie nowej pozycji na etykiecie
 
-        // Resetowanie wartości pos_x (zerojemy pozycję)
+        switch(x){
+            case 0:
+                logMessage("You can't move by 0");
+                break;
+            default:
+                logMessage("Sending command: move by " + x);
+                //disableControls(true);
+                //TODO przesyłanie do okretu wartosci "x" czyli o ile się ruszyć przod(x>0)/tyl(x<0)
+                //TODO otrzymywanie komunikatu z okrętu że zakończył manewr, użyj "disableControls" do blokowania wszystkiego
+                //disableControls(false);
+                break;
+        }
+
         x = 0;
-
-        // Ponownie ustawienie wartości pozycji na "Move" w górnej części ekranu
-        posXLabel.setText("Move: " + x); // Zresetowanie wartości do 0
-
-        logMessage("Position confirmed: " + pos_x);  // Potwierdzenie w konsoli
+        posXLabel.setText("Move: " + x);
+        logMessage("Position: " + pos_x);
     }
 
-    private void handleConfirmButtonPress2() {
-        // Aktualizowanie etykiety wyświetlającej pozycję na podstawie zmienionej wartości pos_x
-        Image joystickImage2 = new Image(getClass().getResource("/images/base_turn_center.png").toExternalForm());
-        joystickImageView2.setImage(joystickImage2);
+    //Handling confirmation of turn left/right joystick
+    private void handleConfirmTurnButtonPress() {
+        Image joystickTurnImage = new Image(getClass().getResource("/images/base_turn_center.png").toExternalForm());
+        joystickTurnImageView.setImage(joystickTurnImage);
         pos_turn += turn;
 
-        // Resetowanie wartości pos_x (zerojemy pozycję)
+        switch (turn){
+            case 0:
+                break;
+            default:
+                logMessage("Sending command: turn by "+ turn);
+                //disableControls(true);
+                //TODO przesyłanie do okretu wartosci "turn" czyli o ile się obrócić lewo(x<0)/prawo(x>0)
+                //TODO otrzymywanie komunikatu z okrętu że zakończył manewr, użyj "disableControls" do blokowania wszystkiego
+                //disableControls(false);
+        }
+
         turn = 0;
-
-        // Ponownie ustawienie wartości pozycji na "Move" w górnej części ekranu
-        posTurnLabel.setText("Turn: " + turn); // Zresetowanie wartości do 0
-
-        logMessage("Turn confirmed: " + pos_turn);  // Potwierdzenie w konsoli
+        posTurnLabel.setText("Turn: " + turn);
+        logMessage("Turned: " + pos_turn);
     }
 
-
+    //Displaying image/view of the "outside"
     private void displayImage() {
         Image image = new Image(getClass().getResource("/images/out_view.png").toExternalForm());
         shipImageView = new ImageView(image);
@@ -289,25 +272,20 @@ public class ShipController {
         shipImageView.setPreserveRatio(true);
         shipImageView.setLayoutX(15);
         shipImageView.setLayoutY(25);
-        //shipImageView.getStyleClass().add("borderedImage");
         rootPane.getChildren().add(shipImageView);
-
-        //System.out.println("Image displayed in the top-left corner.");
-        //System.out.println("ImageView style classes: " + shipImageView.getStyleClass());
     }
 
+    //Creating/Displaying keyboard for immersion
     private void createKeyboard() {
-        // Tworzenie GridPane dla klawiatury
         keyboardGrid = new GridPane();
         keyboardGrid.setAlignment(Pos.CENTER);
 
-        // Tworzenie wyświetlacza tekstowego nad klawiaturą
         keyboardDisplay = new TextField();
         keyboardDisplay.setPrefWidth(200);
         keyboardDisplay.setStyle("-fx-font-size: 18px; -fx-alignment: center;");
-        keyboardDisplay.setEditable(false); // Nie można edytować ręcznie
+        keyboardDisplay.setEditable(false);
 
-        VBox keyboardBox = new VBox(3); // VBox do układania wyświetlacza i klawiatury
+        VBox keyboardBox = new VBox(3);
         keyboardBox.setPrefWidth(5);
         keyboardBox.setAlignment(Pos.CENTER);
 
@@ -336,66 +314,64 @@ public class ShipController {
         AnchorPane.setLeftAnchor(keyboardBox, 20.0);
     }
 
+    //Creating image buttons for keyboard
     private Button createImageButton(String imageFileName) {
         Button button = new Button();
         button.setPrefSize(40, 40);
 
-        // Load the image for the button
         Image image = new Image(getClass().getResource("/images/" + imageFileName).toExternalForm());
         ImageView imageView = new ImageView(image);
         imageView.setFitWidth(40);
         imageView.setFitHeight(40);
         imageView.setPreserveRatio(true);
-
         button.setGraphic(imageView);
 
-        // Extract label from file name (e.g., "0" from "0.png")
         String label = imageFileName.substring(0, imageFileName.indexOf('.'));
-
-        // Remove padding for the button to ensure the image covers it completely
         button.setStyle("-fx-padding: 0; -fx-background-color: transparent;");
-
-        // Set button action
         button.setOnAction(event -> handleKeyboardButtonPress(label));
 
         return button;
     }
 
+    //Handling usage of keyboard buttons for immersion
     private void handleKeyboardButtonPress(String label) {
         switch (label) {
             case "keyboard_ok":
-                logMessage("OK button pressed, value: " + keyboardDisplay.getText());
+                logMessage("Sending command: immersion for " + keyboardDisplay.getText() + " sec");
                 try {
                     immersion_time = Integer.parseInt(keyboardDisplay.getText());
                     //state.setText("Immersion");
+                    //TODO obsługa wysyłania do okrętu wartości "immersion_time", czyli na ile sekund ma się zanurzyć
+                    //TODO otrzymywanie komunikatu z okrętu że zakończył manewr, użyj "disableControls" do blokowania wszystkiego
+                    // zmodyfikuj to ponizej do "} catch", bo teraz używa odliczania w apce na ile jest disable
                     disableControls(true);
+                    logMessage("Immersion for " + immersion_time + "sec");
+                    logMessage("Controls disabled");
                     changeImageDuringImmersion();
                     startImmersionTimer();
                     keyboardDisplay.clear();
+                    //logMessage("Controls enabled");
                 } catch (NumberFormatException e) {
                     showErrorAlert("Invalid input", "Please enter a valid number of seconds.");
                 }
                 break;
             case "keyboard_x":
                 logMessage("Cancel button pressed");
-                keyboardDisplay.clear(); // Clear the display
+                keyboardDisplay.clear();
                 break;
             default:
-                // Extract the number from the label (e.g., "keyboard_0" -> "0")
                 if (label.startsWith("keyboard_")) {
-                    String number = label.substring(9); // Extract the number after "keyboard_"
+                    String number = label.substring(9);
                     keyboardDisplay.appendText(number);
                 }
-                logMessage("Number button pressed: " + label);
                 break;
         }
     }
 
+    //Changing image/view of the "outside" during immersion
     private void changeImageDuringImmersion() {
-        // Zmień obraz na "in_view.png"
         shipImageView.setImage(new Image(getClass().getResource("/images/in_view.png").toExternalForm()));
 
-        // Przywróć oryginalny obraz po zanurzeniu
         Timeline revertImageTimeline = new Timeline(
                 new KeyFrame(Duration.seconds(immersion_time), event -> {
                     shipImageView.setImage(new Image(getClass().getResource("/images/out_view.png").toExternalForm()));
@@ -405,44 +381,39 @@ public class ShipController {
         revertImageTimeline.play();
     }
 
+    //Disabling controls
     private void disableControls(boolean disable) {
-        // Disable buttons in the button grid
-        for (var node : buttonGrid.getChildren()) {
-            node.setDisable(disable);
-        }
-
-        // Disable keyboard grid buttons
         if (keyboardGrid != null) {
             for (var node : keyboardGrid.getChildren()) {
                 node.setDisable(disable);
             }
         }
 
-        // Disable the text field for keyboard input
         keyboardDisplay.setDisable(disable);
-
-        // Disable joysticks and arrow buttons
-        joystickImageView.setDisable(disable); // Disabling joystick image
-        arrowUpButton.setDisable(disable);     // Disabling the arrow up button
-        arrowDownButton.setDisable(disable);   // Disabling the arrow down button
-        confirmButton.setDisable(disable);
+        joystickMoveImageView.setDisable(disable);
+        arrowUpButton.setDisable(disable);
+        arrowDownButton.setDisable(disable);
+        confirmMoveButton.setDisable(disable);
+        joystickTurnImageView.setDisable(disable);
         arrowLeftButton.setDisable(disable);
         arrowRightButton.setDisable(disable);
-        confirmButton2.setDisable(disable);
+        confirmTurnButton.setDisable(disable);
     }
 
-
+    //Apps timer for immersion - TODO do usunięcia po zrobieniu odbierania wiadomości od okrętu o zakończeniu manewru
     private void startImmersionTimer() {
         Timeline timer = new Timeline(
                 new KeyFrame(Duration.seconds(immersion_time), event -> {
-                    state.setText("Emergence");
+                    //state.setText("Emergence");
                     disableControls(false);
+                    logMessage("Controls enabled");
                 })
         );
         timer.setCycleCount(1);
         timer.play();
     }
 
+    //Error alerts
     private void showErrorAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(title);

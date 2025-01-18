@@ -10,14 +10,14 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 public class ShipApplicationController {
+    @FXML
+    private Label text;  //connecting info text
+    @FXML
+    private Label name;  //ship name label
+    @FXML
+    private String appName = "Remote Ship Controller App";  //app name
 
-    @FXML
-    private Label text;
-    @FXML
-    private Label name;
-    @FXML
-    private String appName = "Remote Ship Controller App";
-
+    //initialize
     private Stage stage;
     private Scene startScene;
 
@@ -32,6 +32,7 @@ public class ShipApplicationController {
         name.setStyle("-fx-font-size: 25px; -fx-text-fill: blue; -fx-font-weight: bold;");
     }
 
+    //Handling info button/Showing info about app
     @FXML
     protected void onClickInfoButton() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -42,17 +43,17 @@ public class ShipApplicationController {
                 "\nProject implemented as part of our bachelor's thesis: \"Bezzałogowy pojazd podwodny UUV (SSN688 Los Angeles 1/72)\"" +
                 "\nSupervisor: D.E. Mikołaj Sobczak" +
                 "\nPoznan University of Technology");
-
         alert.showAndWait();
     }
 
+    //Handling connect button
     @FXML
     protected void onClickConnectButton(ActionEvent event) throws Exception {
         text.setText("Connecting...");
+        //TODO łączenie z okrętem i dopiero po tym może się wykonać poniższe
         FXMLLoader loader = new FXMLLoader(getClass().getResource("basic-control-view.fxml"));
         AnchorPane controlSceneRoot = loader.load();
         Scene controlScene = new Scene(controlSceneRoot);
         stage.setScene(controlScene);
     }
-
 }

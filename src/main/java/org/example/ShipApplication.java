@@ -5,8 +5,6 @@ import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
-import java.io.IOException;
-
 
 public class ShipApplication extends Application {
 
@@ -14,6 +12,7 @@ public class ShipApplication extends Application {
         launch(args);
     }
 
+    //initialize app
     @Override
     public void start(Stage stage) throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("base-view.fxml"));
@@ -26,7 +25,6 @@ public class ShipApplication extends Application {
         stage.setTitle("Remote Ship Controller");
         stage.setWidth(800);
         stage.setHeight(600);
-
         stage.show();
     }
 }
