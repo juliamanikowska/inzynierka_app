@@ -2,6 +2,7 @@ package org.example;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
@@ -23,6 +24,7 @@ public class ShipApplication extends Application {
         Scene startScene = new Scene(root);
         stage.setScene(startScene);
         stage.setTitle("Remote Ship Controller");
+        stage.getIcons().add(new Image(getClass().getResource("/images/app_icon.png").toString()));
         stage.setWidth(800);
         stage.setHeight(600);
         stage.show();

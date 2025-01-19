@@ -117,8 +117,8 @@ public class ShipController {
                 "-fx-border-color: gray; " +
                 "-fx-border-width: 2px;");
         rootPane.getChildren().add(logTextArea);
-        AnchorPane.setTopAnchor(logTextArea, 20.0);
-        AnchorPane.setRightAnchor(logTextArea, 10.0);
+        AnchorPane.setTopAnchor(logTextArea, Double.valueOf(20.0));
+        AnchorPane.setRightAnchor(logTextArea, Double.valueOf(10.0));
 
         logMessage("Application initialized.");
 
@@ -129,8 +129,8 @@ public class ShipController {
         joystickMoveImageView.setFitHeight(300);
         joystickMoveImageView.setPreserveRatio(true);
         rootPane.getChildren().add(joystickMoveImageView);
-        AnchorPane.setBottomAnchor(joystickMoveImageView, 80.0);
-        AnchorPane.setLeftAnchor(joystickMoveImageView, 190.0);
+        AnchorPane.setBottomAnchor(joystickMoveImageView, Double.valueOf(80.0));
+        AnchorPane.setLeftAnchor(joystickMoveImageView, Double.valueOf(190.0));
 
         //turn joystick
         Image joystickTurnImage = new Image(getClass().getResource("/images/base_turn_center.png").toExternalForm());
@@ -139,16 +139,16 @@ public class ShipController {
         joystickTurnImageView.setFitHeight(200);
         joystickTurnImageView.setPreserveRatio(true);
         rootPane.getChildren().add(joystickTurnImageView);
-        AnchorPane.setBottomAnchor(joystickTurnImageView, 125.0);
-        AnchorPane.setRightAnchor(joystickTurnImageView, 15.0);
+        AnchorPane.setBottomAnchor(joystickTurnImageView, Double.valueOf(125.0));
+        AnchorPane.setRightAnchor(joystickTurnImageView, Double.valueOf(15.0));
 
         //help
         helpButton = createHelpButton();
         VBox helpBox = new VBox(10);
         helpBox.getChildren().addAll(helpButton);
         rootPane.getChildren().add(helpBox);
-        AnchorPane.setBottomAnchor(helpBox, 5.0);
-        AnchorPane.setRightAnchor(helpBox, 5.0);
+        AnchorPane.setBottomAnchor(helpBox, Double.valueOf(5.0));
+        AnchorPane.setRightAnchor(helpBox, Double.valueOf(5.0));
 
         //arrows next to joysticks
         arrowUpButton = createArrowButton("arrow_up.png", "up");
@@ -159,14 +159,14 @@ public class ShipController {
         VBox arrowBox = new VBox(10);
         arrowBox.getChildren().addAll(arrowUpButton, arrowDownButton);
         rootPane.getChildren().add(arrowBox);
-        AnchorPane.setBottomAnchor(arrowBox, 130.0);
-        AnchorPane.setLeftAnchor(arrowBox, 390.0);
+        AnchorPane.setBottomAnchor(arrowBox, Double.valueOf(130.0));
+        AnchorPane.setLeftAnchor(arrowBox, Double.valueOf(390.0));
 
         HBox arrowBox2 = new HBox(60);
         arrowBox2.getChildren().addAll(arrowLeftButton, arrowRightButton);
         rootPane.getChildren().add(arrowBox2);
-        AnchorPane.setBottomAnchor(arrowBox2, 70.0);
-        AnchorPane.setRightAnchor(arrowBox2, 35.0);
+        AnchorPane.setBottomAnchor(arrowBox2, Double.valueOf(70.0));
+        AnchorPane.setRightAnchor(arrowBox2, Double.valueOf(35.0));
 
         createPositionDisplay();  //move joystick
         createTurnDisplay();  //turn joystick
@@ -287,8 +287,8 @@ public class ShipController {
         positionBox.getChildren().addAll(posXLabel, confirmMoveButton);
         rootPane.getChildren().add(positionBox);
 
-        AnchorPane.setBottomAnchor(positionBox, 140.0);
-        AnchorPane.setLeftAnchor(positionBox, 180.0);
+        AnchorPane.setBottomAnchor(positionBox, Double.valueOf(140.0));
+        AnchorPane.setLeftAnchor(positionBox, Double.valueOf(180.0));
     }
 
     //Displaying value of turn next to left/right turn joystick
@@ -305,8 +305,8 @@ public class ShipController {
         positionBox.getChildren().addAll(posTurnLabel, confirmTurnButton);
         rootPane.getChildren().add(positionBox);
 
-        AnchorPane.setBottomAnchor(positionBox, 140.0);
-        AnchorPane.setRightAnchor(positionBox, 220.0);
+        AnchorPane.setBottomAnchor(positionBox, Double.valueOf(140.0));
+        AnchorPane.setRightAnchor(positionBox, Double.valueOf(220.0));
     }
 
     //Handling confirmation of move fwd/back joystick
@@ -392,8 +392,8 @@ public class ShipController {
 
         keyboardBox.getChildren().addAll(keyboardDisplay, keyboardGrid);
         rootPane.getChildren().add(keyboardBox);
-        AnchorPane.setBottomAnchor(keyboardBox, 90.0);
-        AnchorPane.setLeftAnchor(keyboardBox, 20.0);
+        AnchorPane.setBottomAnchor(keyboardBox, Double.valueOf(90.0));
+        AnchorPane.setLeftAnchor(keyboardBox, Double.valueOf(20.0));
     }
 
     //Creating image buttons for keyboard
