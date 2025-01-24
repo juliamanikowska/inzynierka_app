@@ -205,6 +205,7 @@ public class ShipController {
     //Handling tanking button
     private void handleTankButton(){
 
+
     }
 
     //Handling draining button
@@ -212,7 +213,7 @@ public class ShipController {
 
     }
 
-    //Tanking water
+    //Creating buttons for tanking
     private Button createTankingButtons(int choice){
         Button button = new Button();
         button.setPrefSize(90, 40);
