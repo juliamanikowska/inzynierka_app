@@ -77,6 +77,10 @@ public class ShipController {
     private TextArea logTextArea;  //logs area
     @FXML
     private Button helpButton;  //help button
+    @FXML
+    private Button tankupButton;  //tanking up button
+    @FXML
+    private Button drainButton;  //draining button
 
     private int pos_x = 0;  //global position move
     private int pos_turn = 0;  //global turn
@@ -129,7 +133,7 @@ public class ShipController {
         joystickMoveImageView.setFitHeight(300);
         joystickMoveImageView.setPreserveRatio(true);
         rootPane.getChildren().add(joystickMoveImageView);
-        AnchorPane.setBottomAnchor(joystickMoveImageView, Double.valueOf(80.0));
+        AnchorPane.setBottomAnchor(joystickMoveImageView, Double.valueOf(20.0));
         AnchorPane.setLeftAnchor(joystickMoveImageView, Double.valueOf(190.0));
 
         //turn joystick
@@ -150,6 +154,15 @@ public class ShipController {
         AnchorPane.setBottomAnchor(helpBox, Double.valueOf(5.0));
         AnchorPane.setRightAnchor(helpBox, Double.valueOf(5.0));
 
+        //tanking/draining
+        tankupButton = createTankingButtons(0);
+        drainButton = createTankingButtons(1);
+        HBox tankingBox = new HBox(10);
+        tankingBox.getChildren().addAll(tankupButton, drainButton);
+        rootPane.getChildren().add(tankingBox);
+        AnchorPane.setTopAnchor(tankingBox, Double.valueOf(275.0));
+        AnchorPane.setLeftAnchor(tankingBox, Double.valueOf(375.0));
+
         //arrows next to joysticks
         arrowUpButton = createArrowButton("arrow_up.png", "up");
         arrowDownButton = createArrowButton("arrow_down.png", "down");
@@ -159,7 +172,7 @@ public class ShipController {
         VBox arrowBox = new VBox(10);
         arrowBox.getChildren().addAll(arrowUpButton, arrowDownButton);
         rootPane.getChildren().add(arrowBox);
-        AnchorPane.setBottomAnchor(arrowBox, Double.valueOf(130.0));
+        AnchorPane.setBottomAnchor(arrowBox, Double.valueOf(70.0));
         AnchorPane.setLeftAnchor(arrowBox, Double.valueOf(390.0));
 
         HBox arrowBox2 = new HBox(60);
@@ -187,6 +200,35 @@ public class ShipController {
         battery.setText("Battery: 100");
         engine.setText("Engine: 0");
         direction.setText("Direction: 0");
+    }
+
+    //Handling tanking button
+    private void handleTankButton(){
+
+    }
+
+    //Handling draining button
+    private void handleDrainButton(){
+
+    }
+
+    //Tanking water
+    private Button createTankingButtons(int choice){
+        Button button = new Button();
+        button.setPrefSize(90, 40);
+        button.setStyle("-fx-font-size: 16px;");
+
+        switch(choice){
+            case 0:
+                button.setText("Tank Up");
+                button.setOnAction(event -> handleTankButton());
+                break;
+            case 1:
+                button.setText("Drain");
+                button.setOnAction(event -> handleDrainButton());
+                break;
+        }
+         return button;
     }
 
     //Setting ship info values
@@ -287,7 +329,7 @@ public class ShipController {
         positionBox.getChildren().addAll(posXLabel, confirmMoveButton);
         rootPane.getChildren().add(positionBox);
 
-        AnchorPane.setBottomAnchor(positionBox, Double.valueOf(140.0));
+        AnchorPane.setBottomAnchor(positionBox, Double.valueOf(80.0));
         AnchorPane.setLeftAnchor(positionBox, Double.valueOf(180.0));
     }
 
@@ -392,7 +434,7 @@ public class ShipController {
 
         keyboardBox.getChildren().addAll(keyboardDisplay, keyboardGrid);
         rootPane.getChildren().add(keyboardBox);
-        AnchorPane.setBottomAnchor(keyboardBox, Double.valueOf(90.0));
+        AnchorPane.setBottomAnchor(keyboardBox, Double.valueOf(70.0));
         AnchorPane.setLeftAnchor(keyboardBox, Double.valueOf(20.0));
     }
 
@@ -427,7 +469,7 @@ public class ShipController {
                     }
                     else{
                         immersion_time = Integer.parseInt(keyboardDisplay.getText());
-                        state.setText("Immersion");
+                        state.setText("State: Immersion");
                         //TODO obsługa wysyłania do okrętu wartości "immersion_time", czyli na ile sekund ma się zanurzyć
                         //TODO otrzymywanie komunikatu z okrętu że zakończył manewr, użyj "disableControls" do blokowania wszystkiego
                         // zmodyfikuj to ponizej do "} } catch", bo teraz używa odliczania w apce na ile jest disable
@@ -487,13 +529,15 @@ public class ShipController {
         arrowLeftButton.setDisable(disable);
         arrowRightButton.setDisable(disable);
         confirmTurnButton.setDisable(disable);
+        tankupButton.setDisable(disable);
+        drainButton.setDisable(disable);
     }
 
     //Apps timer for immersion - TODO do usunięcia po zrobieniu odbierania wiadomości od okrętu o zakończeniu manewru
     private void startImmersionTimer() {
         Timeline timer = new Timeline(
                 new KeyFrame(Duration.seconds(immersion_time), event -> {
-                    state.setText("Emergence");
+                    state.setText("State: Emergence");
                     disableControls(false);
                     logMessage("Controls enabled");
                 })
