@@ -81,6 +81,8 @@ public class ShipController {
     private Button tankupButton;  //tanking up button
     @FXML
     private Button drainButton;  //draining button
+    @FXML
+    private Button stopButton;  //stop the tanking/draining button
 
     private int pos_x = 0;  //global position move
     private int pos_turn = 0;  //global turn
@@ -91,7 +93,6 @@ public class ShipController {
     private GridPane keyboardGrid;  //grid for keyboard (immersion)
     private int x = 0;  //value of move next to move joystick
     private int turn =0;  //value of turn next to turn joystick
-
     private SubmarineController submarineController;
     private CommService commService;
 
@@ -163,6 +164,15 @@ public class ShipController {
         AnchorPane.setTopAnchor(tankingBox, Double.valueOf(275.0));
         AnchorPane.setLeftAnchor(tankingBox, Double.valueOf(375.0));
 
+        //stoping tanking/draining
+        stopButton = createStopButton();
+        VBox stopBox = new VBox();
+        stopBox.getChildren().addAll(stopButton);
+        rootPane.getChildren().add(stopBox);
+        AnchorPane.setTopAnchor(stopBox, Double.valueOf(275.0));
+        AnchorPane.setLeftAnchor(stopBox, Double.valueOf(420.0));
+        stopButton.setVisible(false);
+
         //arrows next to joysticks
         arrowUpButton = createArrowButton("arrow_up.png", "up");
         arrowDownButton = createArrowButton("arrow_down.png", "down");
@@ -202,14 +212,35 @@ public class ShipController {
         direction.setText("Direction: 0");
     }
 
+    private Button createStopButton(){
+        Button button = new Button();
+        button.setPrefSize(90, 40);
+        button.setStyle("-fx-font-size: 16px;");
+        button.setText("Stop");
+        button.setOnAction(event -> {
+            disableControls(false);
+            button.setVisible(false);
+            //TODO: dodac obsluge wysylania rozkazu zatrzymania zapelniania
+        });
+
+        return button;
+    }
+
     //Handling tanking button
     private void handleTankButton(){
+        stopButton.setVisible(true);
+        disableControls(true);
 
+        //TODO: dodac obsluge wysylania rozkazu o zapelnianiu
 
     }
 
     //Handling draining button
     private void handleDrainButton(){
+        stopButton.setVisible(true);
+        disableControls(true);
+
+        //TODO: dodac obsluge wysylania rozkazu o oproznianiu
 
     }
 
