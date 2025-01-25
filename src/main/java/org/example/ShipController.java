@@ -1,6 +1,7 @@
 package org.example;
 
 import javafx.scene.control.*;
+import javafx.util.StringConverter;
 import org.example.controller.CommService;
 import org.example.controller.SubmarineController;
 import org.example.model.Command;
@@ -83,6 +84,8 @@ public class ShipController {
     private Button drainButton;  //draining button
     @FXML
     private Button stopButton;  //stop the tanking/draining button
+    @FXML
+    private Slider depthSlider;
 
     private int pos_x = 0;  //global position move
     private int pos_turn = 0;  //global turn
@@ -191,6 +194,33 @@ public class ShipController {
         AnchorPane.setBottomAnchor(arrowBox2, Double.valueOf(70.0));
         AnchorPane.setRightAnchor(arrowBox2, Double.valueOf(35.0));
 
+        //depth slider
+        depthSlider = createSlider();
+        depthSlider = createSlider();
+        //TODO: dodac obsluge wysylania komunikatow o wychyleniu steru glebokosci
+        depthSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            int sliderValue = newValue.intValue();
+            switch (sliderValue) {
+                case 0:
+                    logMessage("Depth rudder set to UP");
+                    break;
+                case 1:
+                    logMessage("Depth rudder set to NEUTRAL");
+                    break;
+                case 2:
+                    logMessage("Depth rudder set to DOWN");
+                    break;
+                default:
+                    logMessage("Unknown slider value");
+                    break;
+            }
+        });
+        VBox sliderBox = new VBox();
+        sliderBox.getChildren().addAll(depthSlider);
+        rootPane.getChildren().add(sliderBox);
+        AnchorPane.setTopAnchor(sliderBox, Double.valueOf(280.0));
+        AnchorPane.setLeftAnchor(sliderBox, Double.valueOf(180.0));
+
         createPositionDisplay();  //move joystick
         createTurnDisplay();  //turn joystick
     }
@@ -219,6 +249,7 @@ public class ShipController {
         button.setText("Stop");
         button.setOnAction(event -> {
             disableControls(false);
+            logMessage("Process stopped");
             button.setVisible(false);
             //TODO: dodac obsluge wysylania rozkazu zatrzymania zapelniania
         });
@@ -226,9 +257,49 @@ public class ShipController {
         return button;
     }
 
+    private Slider createSlider(){
+        Slider slider = new Slider(0, 2, 0);
+        slider.setMin(0);
+        slider.setMax(2);
+        slider.setValue(1);
+        slider.setMinorTickCount(0);
+        slider.setMajorTickUnit(1);
+        slider.setSnapToTicks(true);
+        slider.setShowTickMarks(true);
+        slider.setShowTickLabels(true);
+
+        slider.setLabelFormatter(new StringConverter<Double>() {
+            @Override
+            public String toString(Double n) {
+                if (n < 0.5) return "Up";
+                if (n < 1.5) return "Neutral";
+                return "Down";
+            }
+
+            @Override
+            public Double fromString(String s) {
+                switch (s) {
+                    case "Up":
+                        return 0d;
+                    case "Neutral":
+                        return 1d;
+                    case "Down":
+                        return 2d;
+                    default:
+                        return 1d;
+                }
+            }
+        });
+
+        slider.setMinWidth(150);
+
+        return slider;
+    }
+
     //Handling tanking button
     private void handleTankButton(){
         stopButton.setVisible(true);
+        logMessage("Tanking up");
         disableControls(true);
 
         //TODO: dodac obsluge wysylania rozkazu o zapelnianiu
@@ -238,6 +309,7 @@ public class ShipController {
     //Handling draining button
     private void handleDrainButton(){
         stopButton.setVisible(true);
+        logMessage("Draining");
         disableControls(true);
 
         //TODO: dodac obsluge wysylania rozkazu o oproznianiu
@@ -563,6 +635,7 @@ public class ShipController {
         confirmTurnButton.setDisable(disable);
         tankupButton.setDisable(disable);
         drainButton.setDisable(disable);
+        depthSlider.setDisable(disable);
     }
 
     //Apps timer for immersion - TODO do usunięcia po zrobieniu odbierania wiadomości od okrętu o zakończeniu manewru
