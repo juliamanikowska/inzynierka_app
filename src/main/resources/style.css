@@ -1,6 +1,0 @@
-.borderedImage {
-    -fx-border-color: black;       /* Kolor obramowania */
-    -fx-border-width: 10px;         /* Grubość obramowania */
-    -fx-border-style: solid;        /* Styl obramowania: solid, dashed, etc. */
-    -fx-border-radius: 5px;         /* Rounding of the border */
-}

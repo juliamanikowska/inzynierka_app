@@ -10,7 +10,6 @@
             fx:controller="org.example.ShipController"
             fx:id="rootPane"
             prefHeight="400.0" prefWidth="600.0"
-            stylesheets="@../../style.css"
             focusTraversable="true">
 
     <ImageView fx:id="shipImage" styleClass="borderedImage" />
