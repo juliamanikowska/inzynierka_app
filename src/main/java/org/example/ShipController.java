@@ -367,8 +367,15 @@ public class ShipController {
     }
 
     //Handling help button
-    private void handleHelpButton(){
-
+    @FXML
+    protected void handleHelpButton(){
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Help");
+        alert.setHeaderText("");
+        Image image = new Image(getClass().getResource("/images/help.png").toExternalForm());
+        ImageView imageView = new ImageView(image);
+        alert.setGraphic(imageView);
+        alert.showAndWait();
     }
 
     //Creating image buttons for arrows next to joysticks
