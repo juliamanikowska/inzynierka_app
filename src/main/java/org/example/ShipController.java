@@ -227,19 +227,19 @@ public class ShipController {
 
     //Setting default values for ship info
     private void defaultShipInfo(){
-        shipName.setText("Ship Name: ShipName");
+        shipName.setText("Ship Name: Los Angeles");
         state.setText("State: Emergence");
-        pres.setText("Pres: 0.0");
-        depth.setText("Depth: 0.0");
-        temperature.setText("Temp: 0.0");
-        latitude.setText("Latitude: 0.0");
-        longitude.setText("Longitude: 0.0");
-        pitch.setText("Pitch: 0");
-        roll.setText("Roll: 0");
-        yaw.setText("Yaw: 0");
-        battery.setText("Battery: 100");
-        engine.setText("Engine: 0");
-        direction.setText("Direction: 0");
+        pres.setText("Pres: 0.0 mBa");
+        depth.setText("Depth: 0.0 m");
+        temperature.setText("Temp: 0.0 °C");
+        latitude.setText("Latitude: 0.0 °");
+        longitude.setText("Longitude: 0.0 °");
+        pitch.setText("Pitch: 0 °");
+        roll.setText("Roll: 0 °");
+        yaw.setText("Yaw: 0 °");
+        battery.setText("Battery: 100 %");
+        engine.setText("Engine: 0 %");
+        direction.setText("Direction: 0 °");
     }
 
     private Button createStopButton(){
