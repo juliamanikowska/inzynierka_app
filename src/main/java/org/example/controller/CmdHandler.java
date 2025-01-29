@@ -9,18 +9,44 @@ public class CmdHandler {
         this.submarineController = submarineController;
     }
 
-    public void handleMove(String direction) {
-        Command command = new Command("MOVE", direction);
+    public void handleMove(String speed) {
+        if(Integer.valueOf(speed) > 100 || Integer.valueOf(speed) < -100 ) {
+            System.out.println("Invalid speed");
+        }
+        else {
+            Command command = new Command("1", speed);
+            submarineController.sendCommand(command);
+        }
+    }
+
+    public void handleDirection(String direction) {
+        if(Integer.valueOf(direction) > 40 || Integer.valueOf(direction) < -40 ) {
+            System.out.println("Invalid turn angle");
+        }
+        else {
+            Command command = new Command("2", direction);
+            submarineController.sendCommand(command);
+        }
+
+    }
+
+    public void handleDive(String dive) {
+        if(Integer.valueOf(dive) < 1) {
+            System.out.println("Invalid diving duration time");
+        }
+        else {
+            Command command = new Command("3", dive);
+            submarineController.sendCommand(command);
+        }
+    }
+
+    public void handleDepth(String depth) {
+        Command command = new Command("4", depth);
         submarineController.sendCommand(command);
     }
 
-    public void handleSetSpeed(int speed) {
-        Command command = new Command("SET_SPEED", String.valueOf(speed));
-        submarineController.sendCommand(command);
-    }
-
-    public void handleDive(boolean dive) {
-        Command command = new Command("DIVE", dive ? "1" : "0");
+    public void handlePump(String pump) {
+        Command command = new Command("5", pump);
         submarineController.sendCommand(command);
     }
 }

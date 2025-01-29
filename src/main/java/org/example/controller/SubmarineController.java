@@ -1,6 +1,7 @@
 package org.example.controller;
 
 import org.example.model.Command;
+import org.example.model.Status;
 
 public class SubmarineController {
     private final CommService communicationService;
@@ -14,8 +15,8 @@ public class SubmarineController {
         communicationService.sendMessage(message);
     }
 
-    public String receiveStatus() {
-        return communicationService.readResponse();
+    public Status receiveStatus() {
+        return communicationService.readStatus();
     }
 
     public void initializePort(String portName) {
