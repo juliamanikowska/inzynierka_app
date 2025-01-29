@@ -101,8 +101,10 @@ public class ShipController {
     private SubmarineController submarineController;
     private CommService commService;
 
-    private double lat = 52.461976;
-    private double lon = 16.826015;
+    //private double lat = 52.461976;
+    //private double lon = 16.826015;
+    private double lat = 0;
+    private double lon = 0;
     private WebView mapView;
     private WebEngine webEngine;
 
@@ -366,7 +368,7 @@ public class ShipController {
     //Handling tanking button
     private void handleTankButton(){
         stopButton.setVisible(true);
-        logMessage("Tanking up");
+        logMessage("Flooding the container");
         disableControls(true);
 
         //TODO: dodac obsluge wysylania rozkazu o zapelnianiu
@@ -391,11 +393,11 @@ public class ShipController {
 
         switch(choice){
             case 0:
-                button.setText("Tank Up");
+                button.setText("Flood");
                 button.setOnAction(event -> handleTankButton());
                 break;
             case 1:
-                button.setText("Drain");
+                button.setText("Empty");
                 button.setOnAction(event -> handleDrainButton());
                 break;
         }
@@ -469,25 +471,25 @@ public class ShipController {
             case "up":
                 Image upImage = new Image(getClass().getResource("/images/base_move_up.png").toExternalForm());
                 joystickMoveImageView.setImage(upImage);
-                x++;
+                x+=5;
                 posXLabel.setText("Move: " + x);
                 break;
             case "down":
                 Image downImage = new Image(getClass().getResource("/images/base_move_down.png").toExternalForm());
                 joystickMoveImageView.setImage(downImage);
-                x--;
+                x-=5;
                 posXLabel.setText("Move: " + x);
                 break;
             case "left":
                 Image leftImage = new Image(getClass().getResource("/images/base_turn_left.png").toExternalForm());
                 joystickTurnImageView.setImage(leftImage);
-                turn--;
+                turn-=5;
                 posTurnLabel.setText("Turn: " + turn);
                 break;
             case "right":
                 Image rightImage = new Image(getClass().getResource("/images/base_turn_right.png").toExternalForm());
                 joystickTurnImageView.setImage(rightImage);
-                turn++;
+                turn+=5;
                 posTurnLabel.setText("Turn: " + turn);
                 break;
         }
