@@ -101,10 +101,10 @@ public class ShipController {
     private SubmarineController submarineController;
     private CommService commService;
 
-    //private double lat = 52.461976;
-    //private double lon = 16.826015;
-    private double lat = 0;
-    private double lon = 0;
+    private double lat = 52.461976;
+    private double lon = 16.826015;
+    //private double lat = 0;
+    //private double lon = 0;
     private WebView mapView;
     private WebEngine webEngine;
 
