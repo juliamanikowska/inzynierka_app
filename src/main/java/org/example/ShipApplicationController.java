@@ -41,7 +41,7 @@ public class ShipApplicationController {
         alert.setContentText("App: Remote Ship Controller App" +
                 "\nAuthors: Julia Manikowska, Jakub Kubiak, Mateusz Wieczorek, Jan Odważny" +
                 "\nProject implemented as part of our bachelor's thesis: \"Bezzałogowy pojazd podwodny UUV (SSN688 Los Angeles 1/72)\"" +
-                "\nSupervisor: D.E. Mikołaj Sobczak" +
+                "\nSupervisor: PhD Mikołaj Sobczak" +
                 "\nPoznan University of Technology");
         alert.showAndWait();
     }

@@ -1,6 +1,8 @@
 package org.example;
 
 import javafx.scene.control.*;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
 import javafx.util.StringConverter;
 import org.example.controller.CommService;
 import org.example.controller.SubmarineController;
@@ -99,6 +101,13 @@ public class ShipController {
     private SubmarineController submarineController;
     private CommService commService;
 
+    private double lat = 52.461976;
+    private double lon = 16.826015;
+    //private double lat = 0;
+    //private double lon = 0;
+    private WebView mapView;
+    private WebEngine webEngine;
+
 
     public ShipController() {
         submarineController = new SubmarineController();
@@ -108,11 +117,14 @@ public class ShipController {
     public void initialize() {
         defaultShipInfo();  //default values
         showShipInfo();  //displaying shipInfo
-        displayImage();  //displaying shipImage
+        //displayImage();  //displaying shipImage
         createKeyboard();  //displaying immersion keyboard
 
         rootPane.setFocusTraversable(true);
         rootPane.requestFocus();
+
+        setupMap();
+        updateMap(lat, lon);
 
         //logs area
         logTextArea = new TextArea();
@@ -225,6 +237,63 @@ public class ShipController {
         createTurnDisplay();  //turn joystick
     }
 
+    private void setupMap() {
+        mapView = new WebView();
+        webEngine = mapView.getEngine();
+        mapView.setPrefSize(300, 250);
+
+        // Tworzymy HTML z Leaflet
+        String mapHtml = "<html><head><style>" +
+                "body { margin: 0; padding: 0; height: 100%; }" +
+                "#map { height: 100%; }" +
+                "</style>" +
+                "<link rel='stylesheet' href='https://unpkg.com/leaflet/dist/leaflet.css' />" +
+                "<script src='https://unpkg.com/leaflet/dist/leaflet.js'></script>" +
+                "</head><body>" +
+                "<div id='map'></div>" +
+                "<script>" +
+                // Inicjalizacja mapy i ustawienie parametrów, w tym wyłączenie kontrolek
+                "var map = L.map('map', { zoomControl: false }).setView([51.505, -0.09], 12); " +  // Ustawienia początkowe i zoom na 12
+                "L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);" + // Warstwa mapy OpenStreetMap
+                // Dodanie domyślnego markera w punkcie początkowym
+                "L.marker([51.505, -0.09]).addTo(map);" + // Marker w punkcie początkowym
+                "</script>" +
+                "</body></html>";
+
+        // Ładujemy HTML do WebView
+        webEngine.loadContent(mapHtml);
+
+        // Dodajemy mapę do rootPane
+        rootPane.getChildren().add(mapView);
+        AnchorPane.setTopAnchor(mapView, 20.0);
+        AnchorPane.setLeftAnchor(mapView, 10.0);
+    }
+
+    public void updateMap(double latitude, double longitude) {
+        // Zaktualizowanie mapy na podstawie współrzędnych z przybliżeniem
+        String mapHtml = "<html><head><style>" +
+                "body { margin: 0; padding: 0; height: 100%; }" +
+                "#map { height: 100%; }" +
+                "</style>" +
+                "<link rel='stylesheet' href='https://unpkg.com/leaflet/dist/leaflet.css' />" +
+                "<script src='https://unpkg.com/leaflet/dist/leaflet.js'></script>" +
+                "</head><body>" +
+                "<div id='map'></div>" +
+                "<script>" +
+                // Inicjalizacja mapy i ustawienie parametrów, w tym wyłączenie kontrolek i zoom na 12
+                "var map = L.map('map', { zoomControl: false }).setView([" + latitude + ", " + longitude + "], 12); " + // Zmieniamy współrzędne i zoom
+                "L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);" + // Warstwa mapy OpenStreetMap
+                // Dodanie markera w podanych współrzędnych
+                "L.marker([" + latitude + ", " + longitude + "]).addTo(map);" + // Marker w nowym punkcie
+                "</script>" +
+                "</body></html>";
+
+        // Ładujemy HTML do WebView
+        webEngine.loadContent(mapHtml);
+    }
+
+
+
     //Setting default values for ship info
     private void defaultShipInfo(){
         shipName.setText("Ship Name: Los Angeles");
@@ -232,14 +301,14 @@ public class ShipController {
         pres.setText("Pres: 0.0 mBa");
         depth.setText("Depth: 0.0 m");
         temperature.setText("Temp: 0.0 °C");
-        latitude.setText("Latitude: 0.0 °");
-        longitude.setText("Longitude: 0.0 °");
+        latitude.setText(String.format("Latitude: %.6f °", lat));
+        longitude.setText(String.format("Longitude: %.6f °", lon));
         pitch.setText("Pitch: 0 °");
         roll.setText("Roll: 0 °");
         yaw.setText("Yaw: 0 °");
         battery.setText("Battery: 100 %");
         engine.setText("Engine: 0 %");
-        direction.setText("Direction: 0 °");
+        direction.setText("Heading: 0 °");
     }
 
     private Button createStopButton(){
@@ -299,7 +368,7 @@ public class ShipController {
     //Handling tanking button
     private void handleTankButton(){
         stopButton.setVisible(true);
-        logMessage("Tanking up");
+        logMessage("Flooding the container");
         disableControls(true);
 
         //TODO: dodac obsluge wysylania rozkazu o zapelnianiu
@@ -324,11 +393,11 @@ public class ShipController {
 
         switch(choice){
             case 0:
-                button.setText("Tank Up");
+                button.setText("Flood");
                 button.setOnAction(event -> handleTankButton());
                 break;
             case 1:
-                button.setText("Drain");
+                button.setText("Empty");
                 button.setOnAction(event -> handleDrainButton());
                 break;
         }
@@ -402,25 +471,25 @@ public class ShipController {
             case "up":
                 Image upImage = new Image(getClass().getResource("/images/base_move_up.png").toExternalForm());
                 joystickMoveImageView.setImage(upImage);
-                x++;
+                x+=5;
                 posXLabel.setText("Move: " + x);
                 break;
             case "down":
                 Image downImage = new Image(getClass().getResource("/images/base_move_down.png").toExternalForm());
                 joystickMoveImageView.setImage(downImage);
-                x--;
+                x-=5;
                 posXLabel.setText("Move: " + x);
                 break;
             case "left":
                 Image leftImage = new Image(getClass().getResource("/images/base_turn_left.png").toExternalForm());
                 joystickTurnImageView.setImage(leftImage);
-                turn--;
+                turn-=5;
                 posTurnLabel.setText("Turn: " + turn);
                 break;
             case "right":
                 Image rightImage = new Image(getClass().getResource("/images/base_turn_right.png").toExternalForm());
                 joystickTurnImageView.setImage(rightImage);
-                turn++;
+                turn+=5;
                 posTurnLabel.setText("Turn: " + turn);
                 break;
         }
@@ -588,7 +657,7 @@ public class ShipController {
                         logMessage("Immersion for " + immersion_time + "sec");
                         logMessage("Controls disabled");
                         logMessage("Immersion process may take a while...");
-                        changeImageDuringImmersion();
+                        //changeImageDuringImmersion();
                         startImmersionTimer();
                         keyboardDisplay.clear();
                         //logMessage("Controls enabled");
