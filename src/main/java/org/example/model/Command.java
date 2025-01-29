@@ -10,6 +10,6 @@ public class Command {
     }
 
     public String toProtocolMessage() {
-        return String.format("CMD:%s,VALUE:%s\n", type, value);
+        return String.format("%s %s\n", type, value);
     }
 }

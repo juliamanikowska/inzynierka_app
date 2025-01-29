@@ -1,6 +1,7 @@
 package org.example.controller;
 
 import com.fazecast.jSerialComm.SerialPort;
+import org.example.model.Status;
 
 public class CommService {
     private SerialPort serialPort;
@@ -28,14 +29,19 @@ public class CommService {
         }
     }
 
-    public String readResponse() {
+    public Status readStatus() {
         if (serialPort == null || !serialPort.isOpen()) {
-            throw new IllegalStateException("Port nie jest otwarty.");
+            throw new IllegalStateException("Port is not open.");
         }
 
         byte[] buffer = new byte[1024];
         int bytesRead = serialPort.readBytes(buffer, buffer.length);
-        return (bytesRead > 0) ? new String(buffer, 0, bytesRead).trim() : "";
+        if (bytesRead > 0) {
+            String rawData = new String(buffer, 0, bytesRead).trim();
+            return new Status(rawData);
+        }
+
+        return null;
     }
 
     public void closePort() {
