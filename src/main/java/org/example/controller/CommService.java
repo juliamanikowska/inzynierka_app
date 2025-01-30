@@ -1,6 +1,7 @@
 package org.example.controller;
 
 import com.fazecast.jSerialComm.SerialPort;
+import org.example.model.Command;
 import org.example.model.Status;
 
 public class CommService {
@@ -21,7 +22,8 @@ public class CommService {
         }
     }
 
-    public void sendMessage(String message) {
+    public void sendMessage(Command command) {
+        String message = command.toProtocolMessage();
         if (serialPort != null && serialPort.isOpen()) {
             serialPort.writeBytes(message.getBytes(), message.length());
         } else {

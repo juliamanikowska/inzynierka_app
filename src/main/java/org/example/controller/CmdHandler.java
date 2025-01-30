@@ -3,10 +3,10 @@ package org.example.controller;
 import org.example.model.Command;
 
 public class CmdHandler {
-    private final SubmarineController submarineController;
+    private final CommService commService;
 
-    public CmdHandler(SubmarineController submarineController) {
-        this.submarineController = submarineController;
+    public CmdHandler(CommService commService) {
+        this.commService = commService;
     }
 
     public void handleMove(String speed) {
@@ -15,7 +15,7 @@ public class CmdHandler {
         }
         else {
             Command command = new Command("1", speed);
-            submarineController.sendCommand(command);
+            commService.sendMessage(command);
         }
     }
 
@@ -25,28 +25,28 @@ public class CmdHandler {
         }
         else {
             Command command = new Command("2", direction);
-            submarineController.sendCommand(command);
+            commService.sendMessage(command);
         }
 
     }
 
-    public void handleDive(String dive) {
+    public void handleDiveTime(String dive) {
         if(Integer.valueOf(dive) < 1) {
             System.out.println("Invalid diving duration time");
         }
         else {
             Command command = new Command("3", dive);
-            submarineController.sendCommand(command);
+            commService.sendMessage(command);
         }
     }
 
     public void handleDepth(String depth) {
         Command command = new Command("4", depth);
-        submarineController.sendCommand(command);
+        commService.sendMessage(command);
     }
 
     public void handlePump(String pump) {
         Command command = new Command("5", pump);
-        submarineController.sendCommand(command);
+        commService.sendMessage(command);
     }
 }

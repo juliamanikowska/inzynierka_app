@@ -4,17 +4,13 @@ import javafx.scene.control.*;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.util.StringConverter;
+import org.example.controller.CmdHandler;
 import org.example.controller.CommService;
-import org.example.controller.SubmarineController;
-import org.example.model.Command;
-import com.fazecast.jSerialComm.SerialPort;
 
-import javafx.collections.FXCollections;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
-import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -22,7 +18,7 @@ import javafx.application.Platform;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.util.Duration;
-import javafx.scene.layout.GridPane;
+import org.example.model.Status;
 
 public class ShipController {
     @FXML
@@ -98,8 +94,10 @@ public class ShipController {
     private GridPane keyboardGrid;  //grid for keyboard (immersion)
     private int x = 0;  //value of move next to move joystick
     private int turn =0;  //value of turn next to turn joystick
-    private SubmarineController submarineController;
+
     private CommService commService;
+    private Status status;
+    private CmdHandler cmdHandler;
 
     private double lat = 52.461976;
     private double lon = 16.826015;
@@ -110,8 +108,10 @@ public class ShipController {
 
 
     public ShipController() {
-        submarineController = new SubmarineController();
+        commService = new CommService();
+        cmdHandler = new CmdHandler(commService);
     }
+
 
     @FXML
     public void initialize() {
@@ -321,6 +321,7 @@ public class ShipController {
             logMessage("Process stopped");
             button.setVisible(false);
             //TODO: dodac obsluge wysylania rozkazu zatrzymania zapelniania
+            cmdHandler.handlePump("0");
         });
 
         return button;
@@ -340,19 +341,19 @@ public class ShipController {
         slider.setLabelFormatter(new StringConverter<Double>() {
             @Override
             public String toString(Double n) {
-                if (n < 0.5) return "Up";
-                if (n < 1.5) return "Neutral";
-                return "Down";
+                if (n < 0.5) return "1";
+                if (n < 1.5) return "0";
+                return "-1";
             }
 
             @Override
             public Double fromString(String s) {
                 switch (s) {
-                    case "Up":
+                    case "1":
                         return 0d;
-                    case "Neutral":
+                    case "0":
                         return 1d;
-                    case "Down":
+                    case "-1":
                         return 2d;
                     default:
                         return 1d;
@@ -370,7 +371,7 @@ public class ShipController {
         stopButton.setVisible(true);
         logMessage("Flooding the container");
         disableControls(true);
-
+        cmdHandler.handlePump("-1");
         //TODO: dodac obsluge wysylania rozkazu o zapelnianiu
 
     }
@@ -380,7 +381,7 @@ public class ShipController {
         stopButton.setVisible(true);
         logMessage("Draining");
         disableControls(true);
-
+        cmdHandler.handlePump("1");
         //TODO: dodac obsluge wysylania rozkazu o oproznianiu
 
     }
@@ -406,6 +407,7 @@ public class ShipController {
 
     //Setting ship info values
     private void showShipInfo(){
+        //status = commService.readStatus();
         //TODO pobieranie od okrętu shipName,pres,depth,temperature,latitude,longitude,pitch,roll,yaw,battery,engine,direction
     }
 
@@ -542,6 +544,7 @@ public class ShipController {
         else{
             logMessage("Sending command: move by " + x);
             //TODO przesyłanie do okretu wartosci "x" czyli o ile się ruszyć przod(x>0)/tyl(x<0)
+            cmdHandler.handleMove(String.valueOf(x));
         }
 
         x = 0;
@@ -560,6 +563,7 @@ public class ShipController {
         else{
             logMessage("Sending command: turn by "+ turn);
             //TODO przesyłanie do okretu wartosci "turn" czyli o ile się obrócić lewo(x<0)/prawo(x>0)
+            cmdHandler.handleDirection(String.valueOf(turn));
         }
 
         turn = 0;
@@ -650,6 +654,7 @@ public class ShipController {
                     else{
                         immersion_time = Integer.parseInt(keyboardDisplay.getText());
                         state.setText("State: Immersion");
+                        cmdHandler.handleDiveTime(keyboardDisplay.getText());
                         //TODO obsługa wysyłania do okrętu wartości "immersion_time", czyli na ile sekund ma się zanurzyć
                         //TODO otrzymywanie komunikatu z okrętu że zakończył manewr, użyj "disableControls" do blokowania wszystkiego
                         // zmodyfikuj to ponizej do "} } catch", bo teraz używa odliczania w apce na ile jest disable

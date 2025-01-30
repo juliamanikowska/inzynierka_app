@@ -59,13 +59,14 @@ public class ShipApplicationController {
         alert.showAndWait();
     }
 
-    //Handling connect button
     @FXML
     protected void onClickConnectButton(ActionEvent event) throws Exception {
         text.setText("Connecting...");
+
         String selectedPort = portComboBox.getValue();
         CommService commService = new CommService();
         commService.initializePort(selectedPort);
+
         //TODO łączenie z okrętem i dopiero po tym może się wykonać poniższe
         FXMLLoader loader = new FXMLLoader(getClass().getResource("basic-control-view.fxml"));
         AnchorPane controlSceneRoot = loader.load();
