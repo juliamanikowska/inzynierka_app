@@ -42,5 +42,6 @@
         </HBox>
     </VBox>
 
+
     <Label text="©2025 Julia Manikowska, Jakub Kubiak, Mateusz Wieczorek, Jan Odważny - All rights reserved" AnchorPane.leftAnchor="20" AnchorPane.bottomAnchor="20"/>
 </AnchorPane>

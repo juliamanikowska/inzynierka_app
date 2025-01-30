@@ -11,6 +11,7 @@ module remote.control.app {
     requires org.kordamp.bootstrapfx.core;
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
+    requires static lombok;
 
     opens org.example to javafx.fxml;
     exports org.example;
